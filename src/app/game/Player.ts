@@ -31,6 +31,9 @@ export class Player implements IPlayer, Observed {
         this.pieces.push(new Knight(6, color, true));
         this.pieces.push(new Rook(7, color, true));
         this.pieces.push(new Rook(8, color, true));
+        for(let i=0; i<8;++i){
+            this.pieces.push(new Pawn(9+i, color, false));
+        }
     }
 
     makeMove(){

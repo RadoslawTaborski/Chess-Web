@@ -8,6 +8,7 @@ export class Bishop implements IChessPiece {
     color: Colors;
     special: boolean;
     position: ChessboardItem;
+    readonly sign: string="Bishop";
     moves: IMove[]=[];
 
     constructor(id: number, color: Colors, special:boolean){

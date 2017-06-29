@@ -7,5 +7,6 @@ export interface IChessPiece {
     color: Colors;
     special: boolean;
     position: ChessboardItem;
+    readonly sign: string;
     moves: IMove[];
 }

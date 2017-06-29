@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Game } from "../game/Game";
 import { Player } from "../game/Player";
 import { Rules } from "../game/Rules";
+import { Chessboard } from "../game/Chessboard";
 import { Colors } from "../game/Colors";
 
 @Component({
@@ -19,10 +20,20 @@ export class HomeComponent implements OnInit {
   ngOnInit() {
     for(var i: number = 0; i < 8; i++) {
       this.fields[i] = [];
-      for(var j: number = 0; j< 10; j++) {
+      for(var j: number = 0; j< 8; j++) {
           this.fields[i][j] = "";
       }
     }
+    this.game.setPiecesOnBoard();
+    this.boardToView(this.game.board);
+  }
+
+  boardToView(board: Chessboard){
+    for(let i=0; i<8; ++i)
+      for(let j=0; j<8; ++j){
+        if(this.game.board.board[i][j].piece!=null)
+          this.fields[i][j]=this.game.board.board[i][j].piece.sign+this.game.board.board[i][j].piece.color;
+      }
   }
 
 }

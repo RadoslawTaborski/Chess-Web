@@ -8,6 +8,7 @@ export class Knight implements IChessPiece {
     color: Colors;
     special: boolean;
     position: ChessboardItem;
+    readonly sign: string="Knight";
     moves: IMove[]=[];
 
     constructor(id: number, color: Colors, special:boolean){

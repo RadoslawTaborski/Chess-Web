@@ -8,6 +8,7 @@ export class Pawn implements IChessPiece {
     color: Colors;
     special: boolean;
     position: ChessboardItem;
+    readonly sign: string="pawn";
     moves: IMove[]=[];
 
     constructor(id: number, color: Colors, special:boolean){

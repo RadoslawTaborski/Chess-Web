@@ -16,6 +16,11 @@ export class Game {
         this.board=new Chessboard();
     }
 
+    setPiecesOnBoard(){
+        this.board.setPieces(this.player1);
+        this.board.setPieces(this.player2);
+    }
+
     play(){
 
     }
