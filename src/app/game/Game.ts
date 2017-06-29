@@ -8,4 +8,8 @@ export class Game {
     private player2: IPlayer;
     board: Chessboard;
     rules: Rules = {castling:false, doublePawnSkip:false, time:100, whoStarts:Colors.White}
+
+    constructor(){
+
+    }
 }

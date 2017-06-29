@@ -5,6 +5,10 @@ import { ChessPiece } from "./ChessPieces/ChessPiece"
 export class Chessboard implements Observer {
     board: ChessboardItem[][]=[];
 
+    constructor(){
+
+    }
+    
     update(pieces: ChessPiece[]){
 
     }

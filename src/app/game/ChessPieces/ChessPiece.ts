@@ -5,4 +5,8 @@ export abstract class ChessPiece {
     color: Colors;
     special: boolean;
     moves: ChessboardItem[]=[];
+
+    constructor(){
+        
+    }
 }
