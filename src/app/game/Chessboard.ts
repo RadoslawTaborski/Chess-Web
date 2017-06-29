@@ -21,7 +21,7 @@ export class Chessboard implements Observer {
     }
 
     public setPieces(player: IPlayer){
-        if(player.color==Colors.White){
+        if(player.color==Colors.Black){
             this.setField(player.pieces[0],this.board[0][4]);
             this.setField(player.pieces[1],this.board[0][3]);
             this.setField(player.pieces[2],this.board[0][2]);
