@@ -1,12 +1,12 @@
-import { ChessPiece } from "./ChessPieces/ChessPiece"
+import { IChessPiece } from "./Interface/IChessPiece"
 import { IMove, Type } from "./Interface/IMove"
 
 export class Move implements IMove {
-    source: ChessPiece[];
-    target: ChessPiece[];
+    source: IChessPiece[];
+    target: IChessPiece[];
     type: Type;
 
     constructor(){
-        
+
     }
 }

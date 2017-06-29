@@ -3,7 +3,7 @@ import { IMove } from "../Interface/IMove"
 import { Colors } from "./../Colors";
 import { ChessboardItem } from "./../ChessboardItem";
 
-export class Pawn implements IChessPiece {
+export class Rook implements IChessPiece {
     id: number
     color: Colors;
     special: boolean;

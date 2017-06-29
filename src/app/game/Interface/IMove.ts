@@ -1,8 +1,8 @@
-import { ChessPiece } from "./../ChessPieces/ChessPiece"
+import { IChessPiece } from "./../Interface/IChessPiece"
 
 export interface IMove {
-    source: ChessPiece[];
-    target: ChessPiece[];
+    source: IChessPiece[];
+    target: IChessPiece[];
     type: Type;
 }
 

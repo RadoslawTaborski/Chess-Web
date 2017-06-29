@@ -1,8 +1,18 @@
-import { ChessPiece } from "./ChessPiece"
+import { IChessPiece } from "../Interface/IChessPiece"
+import { IMove } from "../Interface/IMove"
+import { Colors } from "./../Colors";
+import { ChessboardItem } from "./../ChessboardItem";
 
-export class King extends ChessPiece {
+export class King implements IChessPiece {
+    id: number
+    color: Colors;
+    special: boolean;
+    position: ChessboardItem;
+    moves: IMove[]=[];
 
-    constructor() {
-        super();
+    constructor(id: number, color: Colors, special:boolean){
+        this.id=id;
+        this.color=color;
+        this.special=special;
     }
 }

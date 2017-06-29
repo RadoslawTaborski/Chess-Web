@@ -1,6 +1,6 @@
 import { ChessboardItem } from "./ChessboardItem"
 import { Observer } from "./Pattern/ObserverPattern"
-import { ChessPiece } from "./ChessPieces/ChessPiece"
+import { IChessPiece } from "./Interface/IChessPiece"
 
 export class Chessboard implements Observer {
     board: ChessboardItem[][]=[];
@@ -9,7 +9,7 @@ export class Chessboard implements Observer {
 
     }
     
-    update(pieces: ChessPiece[]){
+    update(pieces: IChessPiece[]){
 
     }
 }

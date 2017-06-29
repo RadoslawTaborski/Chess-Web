@@ -7,9 +7,16 @@ export class Game {
     private player1: IPlayer;
     private player2: IPlayer;
     board: Chessboard;
-    rules: Rules = {castling:false, doublePawnSkip:false, time:100, whoStarts:Colors.White}
+    rules: Rules; 
 
-    constructor(){
+    constructor(player1: IPlayer, player2: IPlayer, rules: Rules){
+        this.player1=player1;
+        this.player2=player2;
+        this.rules=rules;
+        this.board=new Chessboard();
+    }
+
+    play(){
 
     }
 }

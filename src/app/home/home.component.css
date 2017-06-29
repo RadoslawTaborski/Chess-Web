@@ -1,0 +1,26 @@
+.fieldB{
+    height: 100px;
+    width: 100px;
+    background-color: black;
+    color: white;
+    border-style: solid;
+    border-color: black;
+}
+
+.fieldC{
+    height: 100px;
+    width: 100px;
+    background-color: white;
+    color: black;
+    border-style: solid;
+    border-color: black;
+}
+
+.center{
+    text-align: center;
+    font-weight: bold;
+}
+
+table {
+    margin: 0 auto;
+}

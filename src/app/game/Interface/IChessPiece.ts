@@ -1,12 +1,11 @@
 import { Colors } from "./../Colors"
 import { ChessboardItem } from "./../ChessboardItem"
+import { IMove } from "./IMove"
 
-export abstract class ChessPiece {
+export interface IChessPiece {
+    id: number
     color: Colors;
     special: boolean;
-    moves: ChessboardItem[]=[];
-
-    constructor(){
-        
-    }
+    position: ChessboardItem;
+    moves: IMove[];
 }

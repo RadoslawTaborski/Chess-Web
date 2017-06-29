@@ -1,7 +1,7 @@
-import { ChessPiece } from "./../ChessPieces/ChessPiece"
+import { IChessPiece } from "./../Interface/IChessPiece"
 
 export interface Observer {
-    update(pieces: ChessPiece[]);
+    update(pieces: IChessPiece[]);
 }
 
 export interface Observed {
