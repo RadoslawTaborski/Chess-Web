@@ -1,7 +1,7 @@
 .fieldB{
     height: 100px;
     width: 100px;
-    background-color: red;
+    background-color:burlywood;
     color: white;
     border-style: solid;
     border-color: black;
@@ -11,7 +11,7 @@
 .fieldC{
     height: 100px;
     width: 100px;
-    background-color: yellow;
+    background-color: saddlebrown;
     color: white;
     border-style: solid;
     border-color: black;
@@ -46,8 +46,8 @@
 
 .input
 {
-  width: 80px;
-  height: 80px;
+  width: 90px;
+  height: 90px;
   border-radius: 50%;
   font-size: 50px;
   color: white;
@@ -55,6 +55,7 @@
   text-align: center;
   background: transparent;
   border:none;
+  margin: 2px 2px;
 }
 
 .center{
