@@ -1,19 +1,60 @@
 .fieldB{
     height: 100px;
     width: 100px;
-    background-color: black;
+    background-color: red;
     color: white;
     border-style: solid;
     border-color: black;
+    text-align: center;
 }
 
 .fieldC{
     height: 100px;
     width: 100px;
-    background-color: white;
-    color: black;
+    background-color: yellow;
+    color: white;
     border-style: solid;
     border-color: black;
+    text-align: center;
+}
+
+.inputBlack
+{
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  font-size: 50px;
+  color: white;
+  font-size: 20px;
+  text-align: center;
+  background: black;
+  margin: 2px 2px;
+}
+
+.inputWhite
+{
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  font-size: 50px;
+  color: black;
+  font-size: 20px;
+  text-align: center;
+  background: white;
+  margin: 2px 2px;
+}
+
+.input
+{
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  font-size: 50px;
+  color: white;
+  font-size: 20px;
+  text-align: center;
+  background: transparent;
+  border:none;
 }
 
 .center{

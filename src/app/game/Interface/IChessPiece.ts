@@ -1,5 +1,6 @@
 import { Colors } from "./../Colors"
 import { ChessboardItem } from "./../ChessboardItem"
+import { Chessboard } from "./../Chessboard"
 import { IMove } from "./IMove"
 
 export interface IChessPiece {
@@ -9,4 +10,6 @@ export interface IChessPiece {
     position: ChessboardItem;
     readonly sign: string;
     moves: IMove[];
+
+    updateMoves(board: Chessboard);
 }

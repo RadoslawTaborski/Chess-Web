@@ -9,6 +9,7 @@ import { Queen } from "./ChessPieces/Queen"
 import { King } from "./ChessPieces/King"
 import { Colors } from "./Colors"
 import { ChessboardItem } from "./ChessboardItem"
+import { Chessboard } from "./Chessboard"
 import { IMove, Type } from "./Interface/IMove"
 
 export class Player implements IPlayer, Observed {
@@ -16,7 +17,7 @@ export class Player implements IPlayer, Observed {
     color:Colors;
     pieces: IChessPiece[]=[];    
     time: number;
-    moves: IMove[];
+    moves: IMove[]=[];
 
     constructor(name: string, color: Colors, time:number){
         this.name=name;
@@ -38,6 +39,13 @@ export class Player implements IPlayer, Observed {
 
     makeMove(){
 
+    }
+
+    updateMoves(board: Chessboard){
+        for(let piece of this.pieces){
+            piece.updateMoves(board);
+            this.moves.concat(piece.moves);
+        }
     }
 
     addObserver(o: Observed){

@@ -1,5 +1,6 @@
 import { IChessPiece } from "./../Interface/IChessPiece"
 import { Colors } from "./../Colors"
+import { Chessboard } from "./../Chessboard"
 import { IMove } from "./IMove"
 
 export interface IPlayer {
@@ -10,5 +11,5 @@ export interface IPlayer {
     moves: IMove[];
 
     makeMove();
-
+    updateMoves(board: Chessboard);
 }
