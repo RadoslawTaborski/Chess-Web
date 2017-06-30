@@ -1,18 +1,14 @@
-import { IChessPiece } from "./../Interface/IChessPiece"
+import { ChessboardItem } from "./../ChessboardItem"
 
 export interface IMove {
-    source: IChessPiece[];
-    target: IChessPiece[];
+    source: ChessboardItem;
+    target: ChessboardItem;
     type: Type;
 }
 
 export enum Type {
    Ordinary = 0,
-   CaptureBishop,
-   CaptureKnight,
-   CapturePawn,
-   CaptureRock,
-   CaptureQueen,
+   Capture,
    Check,
    Checkmate,
    Castle

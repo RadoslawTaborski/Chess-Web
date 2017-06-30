@@ -19,6 +19,6 @@ export class Bishop implements IChessPiece {
     }
 
     updateMoves(board: Chessboard){
-
+        
     }
 }

@@ -42,6 +42,7 @@ export class Player implements IPlayer, Observed {
     }
 
     updateMoves(board: Chessboard){
+        this.moves=[];
         for(let piece of this.pieces){
             piece.updateMoves(board);
             this.moves.concat(piece.moves);

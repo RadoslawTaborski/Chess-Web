@@ -14,7 +14,7 @@
     <td class="center">{{8-fields.indexOf(row)}}</td>
     <td *ngFor="let item of row">
         <div [class.fieldC]="item.color==2" [class.fieldB]="item.color==1">
-            <input type="button" value="{{item.sign}}" [class.input]="item.val==0" [class.inputBlack]="item.val==2" [class.inputWhite]="item.val==1">
+            <input type="button" value="{{item.sign}}" [class.input]="item.val==0" [class.inputBlack]="item.val==2" [class.inputWhite]="item.val==1" [disabled]="!item.active" (click)="move(item)">
         </div>
     </td>
     <td class="center">{{8-fields.indexOf(row)}}</td>
