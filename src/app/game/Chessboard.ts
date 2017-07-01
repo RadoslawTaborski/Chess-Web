@@ -48,6 +48,12 @@ export class Chessboard implements Observer {
         }
     }
 
+    getField(row: number, col:number): ChessboardItem{
+        if(row >=0 && row <8 && col>=0 && col < 8)
+            return this.board[row][col];
+        return null;
+    }
+
     private setField(piece: IChessPiece, field: ChessboardItem){
         piece.position=field;
         field.piece=piece;

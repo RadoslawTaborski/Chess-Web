@@ -1,4 +1,5 @@
 import { IPlayer } from "./Interface/IPlayer";
+import { IChessPiece } from "./Interface/IChessPiece";
 import { Chessboard } from "./Chessboard";
 import { ChessboardItem } from "./ChessboardItem";
 import { Rules } from "./Rules";
@@ -47,17 +48,16 @@ export class Game {
     move(first:ChessboardItem, second:ChessboardItem){
         console.log(first, second);
         if(second.piece!=null){
-            let index=this.turn.pieces.indexOf(second.piece);
-            this.pause.pieces.splice(index,1);
-            second.piece=null;
-            console.log(first, second);
+            this.Capture(this.pause,second.piece);
         }
         second.piece=first.piece;
-        console.log(first, second);
         let index=this.turn.pieces.indexOf(second.piece);
         this.turn.pieces[index].position=second;
         first.piece=null;
-        console.log(first, second);
-        console.log(this.board.board)
+    }
+
+    private Capture(player: IPlayer, piece: IChessPiece){
+        let index=player.pieces.indexOf(piece);
+            player.pieces.splice(index,1);
     }
 }

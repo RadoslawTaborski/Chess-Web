@@ -24,38 +24,30 @@ export class Pawn implements IChessPiece {
         let row = this.position.row;
         let col = this.position.col;
         if (this.color == Colors.White) {
-            let tmp = board.board[row - 1][col];
-            if (tmp.piece == null) {
+            let tmp = board.getField(row - 1, col);
+            if (tmp!= null && tmp.piece == null) {
                 this.moves.push(new Move(this.position, tmp, Type.Ordinary))
             }
-            if (col != 0) {
-                tmp = board.board[row - 1][col - 1];
-                if (tmp.piece != null && tmp.piece.color == Colors.Black) {
-                    this.moves.push(new Move(this.position, tmp, Type.Capture))
-                }
+            tmp = board.getField(row - 1, col - 1);
+            if (tmp!= null && tmp.piece != null && tmp.piece.color == Colors.Black) {
+                this.moves.push(new Move(this.position, tmp, Type.Capture))
             }
-            if (col != 7) {
-                tmp = board.board[row - 1][col + 1];
-                if (tmp.piece != null && tmp.piece.color == Colors.Black) {
-                    this.moves.push(new Move(this.position, tmp, Type.Capture))
-                }
+            tmp = board.getField(row - 1, col + 1);
+            if (tmp!= null && tmp.piece != null && tmp.piece.color == Colors.Black) {
+                this.moves.push(new Move(this.position, tmp, Type.Capture))
             }
         } else {
-            let tmp = board.board[row + 1][col];
-            if (tmp.piece == null) {
+            let tmp = board.getField(row + 1, col);
+            if (tmp!= null && tmp.piece == null) {
                 this.moves.push(new Move(this.position, tmp, Type.Ordinary))
             }
-            if (col != 0) {
-                tmp = board.board[row + 1][col - 1];
-                if (tmp.piece != null && tmp.piece.color == Colors.White) {
-                    this.moves.push(new Move(this.position, tmp, Type.Capture))
-                }
+            tmp = board.getField(row + 1, col - 1);
+            if (tmp!= null && tmp.piece != null && tmp.piece.color == Colors.White) {
+                this.moves.push(new Move(this.position, tmp, Type.Capture))
             }
-            if (col != 7) {
-                tmp = board.board[row + 1][col + 1];
-                if (tmp.piece != null && tmp.piece.color == Colors.White) {
-                    this.moves.push(new Move(this.position, tmp, Type.Capture))
-                }
+            tmp = board.getField(row + 1, col + 1);
+            if (tmp!= null && tmp.piece != null && tmp.piece.color == Colors.White) {
+                this.moves.push(new Move(this.position, tmp, Type.Capture))
             }
         }
     }
