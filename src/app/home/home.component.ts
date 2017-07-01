@@ -17,6 +17,8 @@ export class HomeComponent implements OnInit {
   game: Game = new Game(new Player("Gal Anonim", Colors.White, this.rules.time), new Player("Adam", Colors.Black, this.rules.time), this.rules);
   endMove: boolean = false;
   firstClick: ChessboardItem = null;
+  turn: Colors=this.game.turn.color;
+  state: string="stan normalny";
 
   constructor() { }
 
@@ -49,12 +51,18 @@ export class HomeComponent implements OnInit {
       this.game.move(this.firstClick, this.fieldToBoardItem(field));
       this.endMove = true;
       this.game.changePlayer();
+      this.turn=this.game.turn.color;
+      this.state=this.game.check?"Szach":"stan normalny"
       this.setEndabledForPlayer();
       this.boardToView(this.game.board);
     } else {
       //console.log("first");
       this.setEndabledForPlayer();
       this.game.update();
+      if(this.game.end()){
+        this.state="Szach mat";
+        this.setAllDisabled();
+      }
       this.firstClick = this.fieldToBoardItem(field);
       if (this.firstClick .piece != null)
         for (let item of this.firstClick .piece.moves) {

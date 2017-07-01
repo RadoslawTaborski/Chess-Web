@@ -9,7 +9,6 @@ export class Game {
     players: IPlayer[]=[];
     board: Chessboard;
     rules: Rules; 
-    end: boolean=false;
     turn: IPlayer;
     pause: IPlayer;
     check: boolean=false;
@@ -53,6 +52,13 @@ export class Game {
         let index=this.turn.pieces.indexOf(second.piece);
         this.turn.pieces[index].position=second;
         first.piece=null;
+    }
+
+    end(): boolean{
+        if(this.check && this.turn.pieces[0].moves.length==0){ //TODO: może być również opcja z zasłonięciem króla :(
+            return true;
+        }
+        return false;
     }
 
     private Capture(player: IPlayer, piece: IChessPiece){

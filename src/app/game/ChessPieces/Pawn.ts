@@ -56,4 +56,4 @@ export class Pawn implements IChessPiece {
             }
         }
     }
-}
+} //TODO: dodać poruszanie dwóch pól do przodu

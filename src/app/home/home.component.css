@@ -66,3 +66,17 @@
 table {
     margin: 0 auto;
 }
+
+.black {
+    background: black;
+    color: white;
+    border: solid;
+    border-color: grey;
+}
+
+.white {
+    background: white;
+    color: black;
+    border: solid;
+    border-color: grey;
+}
