@@ -41,11 +41,7 @@ export class Game {
     }
 
     firstPlayerStarts(): boolean {
-        if(this.players[0].color==this.rules.whoStarts){
-            return true;
-        }else{
-            return false;
-        }
+        return (this.players[0].color==this.rules.whoStarts)?true:false;
     }
 
     move(first:ChessboardItem, second:ChessboardItem){

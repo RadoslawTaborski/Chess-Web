@@ -12,7 +12,8 @@ export class Pawn implements IChessPiece {
     position: ChessboardItem;
     readonly sign: string = "pawn";
     moves: IMove[] = [];
-    checking: boolean=false;
+    potentialMoves: IMove[] = [];
+    checking: boolean = false;
 
     constructor(id: number, color: Colors, special: boolean) {
         this.id = id;
@@ -20,60 +21,38 @@ export class Pawn implements IChessPiece {
         this.special = special;
     }
 
-    isChecking():boolean{
+    isChecking(): boolean {
         return this.checking;
     }
 
-    cleanMoves(){
-        this.moves=[];
+    cleanMoves() {
+        this.moves = [];
     }
 
     updateMoves(board: Chessboard) {
-        this.checking=false;
-        this.moves = [];
+        this.checking = false;
+        this.cleanMoves();
+        this.potentialMoves = [];
+        this.updateMovesColor(board, this.color);
+    }
+
+    private updateMovesColor(board: Chessboard, color: Colors) {
         let row = this.position.row;
         let col = this.position.col;
-        if (this.color == Colors.White) {
-            let tmp = board.getField(row - 1, col);
-            if (tmp!= null && tmp.piece == null) {
+        let forward = (color == Colors.White ? -1 : 1);
+        for (let i = -1; i < 2; ++i) {
+            let tmp = board.getField(row + forward, col + i);
+            if (i == 0 && tmp != null && tmp.piece == null) {
                 this.moves.push(new Move(this.position, tmp, Type.Ordinary))
-            }
-            tmp = board.getField(row - 1, col - 1);
-            if (tmp!= null && tmp.piece != null && tmp.piece.color == Colors.Black) {
-                if (tmp.piece.id!=1){
+            } else if (i!=0 && tmp != null && tmp.piece != null && tmp.piece.color != color) {
+                if (tmp.piece.id != 1) {
                     this.moves.push(new Move(this.position, tmp, Type.Capture))
-                }else{
-                    this.checking=true;
+                } else {
+                    this.checking = true;
                 }
             }
-            tmp = board.getField(row - 1, col + 1);
-            if (tmp!= null && tmp.piece != null && tmp.piece.color == Colors.Black) {
-                if (tmp.piece.id!=1){
-                    this.moves.push(new Move(this.position, tmp, Type.Capture))
-                }else{
-                    this.checking=true;
-                }
-            }
-        } else {
-            let tmp = board.getField(row + 1, col);
-            if (tmp!= null && tmp.piece == null) {
-                this.moves.push(new Move(this.position, tmp, Type.Ordinary))
-            }
-            tmp = board.getField(row + 1, col - 1);
-            if (tmp!= null && tmp.piece != null && tmp.piece.color == Colors.White) {
-                if (tmp.piece.id!=1){
-                    this.moves.push(new Move(this.position, tmp, Type.Capture))
-                }else{
-                    this.checking=true;
-                }
-            }
-            tmp = board.getField(row + 1, col + 1);
-            if (tmp!= null && tmp.piece != null && tmp.piece.color == Colors.White) {
-                if (tmp.piece.id!=1){
-                    this.moves.push(new Move(this.position, tmp, Type.Capture))
-                }else{
-                    this.checking=true;
-                }
+            if (i!=0 && tmp != null) {
+                this.potentialMoves.push(new Move(this.position, tmp, Type.Capture))
             }
         }
     }
