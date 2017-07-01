@@ -45,14 +45,14 @@ export class HomeComponent implements OnInit {
 
   move(field: Field) {
     if (field.val != this.game.players.indexOf(this.game.turn) + 1) {
-      console.log("second");
+      //console.log("second");
       this.game.move(this.firstClick, this.fieldToBoardItem(field));
       this.endMove = true;
       this.game.changePlayer();
       this.setEndabledForPlayer();
       this.boardToView(this.game.board);
     } else {
-      console.log("first");
+      //console.log("first");
       this.setEndabledForPlayer();
       this.game.update();
       this.firstClick = this.fieldToBoardItem(field);

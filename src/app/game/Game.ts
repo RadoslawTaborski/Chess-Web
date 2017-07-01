@@ -12,6 +12,7 @@ export class Game {
     end: boolean=false;
     turn: IPlayer;
     pause: IPlayer;
+    check: boolean=false;
 
     constructor(player1: IPlayer, player2: IPlayer, rules: Rules){
         this.players.push(player1);
@@ -28,10 +29,12 @@ export class Game {
     }
 
     update(){
-        this.turn.updateMoves(this.board);
+        this.turn.updateMoves(this.board,this.check);
     }
 
     changePlayer(){
+        this.check=this.turn.isChecking(this.board);
+        console.log(this.check);
         let tmp=this.turn;
         this.turn=this.pause;
         this.pause=tmp;
@@ -46,7 +49,7 @@ export class Game {
     }
 
     move(first:ChessboardItem, second:ChessboardItem){
-        console.log(first, second);
+        //console.log(first, second);
         if(second.piece!=null){
             this.Capture(this.pause,second.piece);
         }

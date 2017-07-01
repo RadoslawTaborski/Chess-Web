@@ -13,16 +13,16 @@ import { Chessboard } from "./Chessboard"
 import { IMove, Type } from "./Interface/IMove"
 
 export class Player implements IPlayer, Observed {
-    name:string="";
-    color:Colors;
-    pieces: IChessPiece[]=[];    
+    name: string = "";
+    color: Colors;
+    pieces: IChessPiece[] = [];
     time: number;
-    moves: IMove[]=[];
+    moves: IMove[] = [];
 
-    constructor(name: string, color: Colors, time:number){
-        this.name=name;
-        this.color=color;
-        this.time=time;
+    constructor(name: string, color: Colors, time: number) {
+        this.name = name;
+        this.color = color;
+        this.time = time;
 
         this.pieces.push(new King(1, color, true));
         this.pieces.push(new Queen(2, color, true));
@@ -32,32 +32,49 @@ export class Player implements IPlayer, Observed {
         this.pieces.push(new Knight(6, color, true));
         this.pieces.push(new Rook(7, color, true));
         this.pieces.push(new Rook(8, color, true));
-        for(let i=0; i<8;++i){
-            this.pieces.push(new Pawn(9+i, color, false));
+        for (let i = 0; i < 8; ++i) {
+            this.pieces.push(new Pawn(9 + i, color, false));
         }
     }
 
-    makeMove(){
+    makeMove() {
 
     }
 
-    updateMoves(board: Chessboard){
-        this.moves=[];
-        for(let piece of this.pieces){
+    updateMoves(board: Chessboard, checked: boolean) {
+        this.moves = [];
+        if (!checked) {
+            for (let piece of this.pieces) {
+                piece.updateMoves(board);
+                this.moves.concat(piece.moves);
+            }
+        } else {
+            for (let piece of this.pieces) {
+                piece.cleanMoves();
+            }
+            this.pieces[0].updateMoves(board);
+            this.moves.concat(this.pieces[0].moves);
+        }
+    }
+
+    isChecking(board: Chessboard): boolean {
+        for (let piece of this.pieces) {
             piece.updateMoves(board);
-            this.moves.concat(piece.moves);
+            if (piece.isChecking())
+                return true;
         }
+        return false;
     }
 
-    addObserver(o: Observed){
-
-    }
-
-    removeObserver(o: Observed){
+    addObserver(o: Observed) {
 
     }
 
-    event(){
+    removeObserver(o: Observed) {
+
+    }
+
+    event() {
 
     }
 }

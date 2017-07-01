@@ -12,6 +12,7 @@ export class Pawn implements IChessPiece {
     position: ChessboardItem;
     readonly sign: string = "pawn";
     moves: IMove[] = [];
+    checking: boolean=false;
 
     constructor(id: number, color: Colors, special: boolean) {
         this.id = id;
@@ -19,7 +20,16 @@ export class Pawn implements IChessPiece {
         this.special = special;
     }
 
+    isChecking():boolean{
+        return this.checking;
+    }
+
+    cleanMoves(){
+        this.moves=[];
+    }
+
     updateMoves(board: Chessboard) {
+        this.checking=false;
         this.moves = [];
         let row = this.position.row;
         let col = this.position.col;
@@ -30,11 +40,19 @@ export class Pawn implements IChessPiece {
             }
             tmp = board.getField(row - 1, col - 1);
             if (tmp!= null && tmp.piece != null && tmp.piece.color == Colors.Black) {
-                this.moves.push(new Move(this.position, tmp, Type.Capture))
+                if (tmp.piece.id!=1){
+                    this.moves.push(new Move(this.position, tmp, Type.Capture))
+                }else{
+                    this.checking=true;
+                }
             }
             tmp = board.getField(row - 1, col + 1);
             if (tmp!= null && tmp.piece != null && tmp.piece.color == Colors.Black) {
-                this.moves.push(new Move(this.position, tmp, Type.Capture))
+                if (tmp.piece.id!=1){
+                    this.moves.push(new Move(this.position, tmp, Type.Capture))
+                }else{
+                    this.checking=true;
+                }
             }
         } else {
             let tmp = board.getField(row + 1, col);
@@ -43,11 +61,19 @@ export class Pawn implements IChessPiece {
             }
             tmp = board.getField(row + 1, col - 1);
             if (tmp!= null && tmp.piece != null && tmp.piece.color == Colors.White) {
-                this.moves.push(new Move(this.position, tmp, Type.Capture))
+                if (tmp.piece.id!=1){
+                    this.moves.push(new Move(this.position, tmp, Type.Capture))
+                }else{
+                    this.checking=true;
+                }
             }
             tmp = board.getField(row + 1, col + 1);
             if (tmp!= null && tmp.piece != null && tmp.piece.color == Colors.White) {
-                this.moves.push(new Move(this.position, tmp, Type.Capture))
+                if (tmp.piece.id!=1){
+                    this.moves.push(new Move(this.position, tmp, Type.Capture))
+                }else{
+                    this.checking=true;
+                }
             }
         }
     }

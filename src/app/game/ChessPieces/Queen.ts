@@ -11,11 +11,20 @@ export class Queen implements IChessPiece {
     position: ChessboardItem;
     readonly sign: string="Queen";
     moves: IMove[]=[];
+    checking: boolean=false;
 
     constructor(id: number, color: Colors, special:boolean){
         this.id=id;
         this.color=color;
         this.special=special;
+    }
+
+    isChecking():boolean{
+        return this.checking;
+    }
+
+    cleanMoves(){
+        this.moves=[];
     }
 
     updateMoves(board: Chessboard){

@@ -10,6 +10,9 @@ export interface IChessPiece {
     position: ChessboardItem;
     readonly sign: string;
     moves: IMove[];
+    checking: boolean;
 
-    updateMoves(board: Chessboard);
+    updateMoves(board: Chessboard):void;
+    isChecking():boolean;
+    cleanMoves():void;
 }

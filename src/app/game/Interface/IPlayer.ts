@@ -11,5 +11,6 @@ export interface IPlayer {
     moves: IMove[];
 
     makeMove();
-    updateMoves(board: Chessboard);
+    updateMoves(board: Chessboard, checked: boolean);
+    isChecking(board: Chessboard):boolean;
 }
