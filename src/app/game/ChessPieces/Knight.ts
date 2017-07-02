@@ -1,5 +1,6 @@
 import { IChessPiece } from "../Interface/IChessPiece"
-import { IMove } from "../Interface/IMove"
+import { IMove, Type } from "../Interface/IMove"
+import { Move } from "../Move"
 import { Colors } from "./../Colors";
 import { ChessboardItem } from "./../ChessboardItem";
 import { Chessboard } from "./../Chessboard";
@@ -11,6 +12,7 @@ export class Knight implements IChessPiece {
     position: ChessboardItem;
     readonly sign: string="Knight";
     moves: IMove[]=[];
+    potentialMoves: IMove[]=[];
     checking: boolean=false;
 
     constructor(id: number, color: Colors, special:boolean){

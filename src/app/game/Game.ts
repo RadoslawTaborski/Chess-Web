@@ -18,6 +18,8 @@ export class Game {
         this.players.push(player2);
         this.rules=rules;
         this.board=new Chessboard();
+        this.players[0].addObserver(this.board);
+        this.players[1].addObserver(this.board);
         this.turn=this.firstPlayerStarts()?this.players[0]:this.players[1];
         this.pause=this.firstPlayerStarts()?this.players[1]:this.players[0];
     }
@@ -52,6 +54,7 @@ export class Game {
         let index=this.turn.pieces.indexOf(second.piece);
         this.turn.pieces[index].position=second;
         first.piece=null;
+        this.turn.promotionPawn(this.board);
     }
 
     end(): boolean{

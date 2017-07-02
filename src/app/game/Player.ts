@@ -1,5 +1,5 @@
 import { IPlayer } from "./Interface/IPlayer"
-import { Observed } from "./Pattern/ObserverPattern"
+import { Observer } from "./Pattern/ObserverPattern"
 import { IChessPiece } from "./Interface/IChessPiece"
 import { Pawn } from "./ChessPieces/Pawn"
 import { Rook } from "./ChessPieces/Rook"
@@ -12,7 +12,8 @@ import { ChessboardItem } from "./ChessboardItem"
 import { Chessboard } from "./Chessboard"
 import { IMove, Type } from "./Interface/IMove"
 
-export class Player implements IPlayer, Observed {
+export class Player implements IPlayer {
+    observers: Observer[]=[];
     name: string = "";
     color: Colors;
     pieces: IChessPiece[] = [];
@@ -57,6 +58,19 @@ export class Player implements IPlayer, Observed {
         }
     }
 
+    promotionPawn(board: Chessboard){
+        for (let i=0; i<this.pieces.length;++i){
+            if (this.pieces[i] instanceof Pawn && (this.pieces[i].position.row==0 || this.pieces[i].position.row==7)) {
+                let pos=this.pieces[i].position;
+                this.pieces[i]=new Queen(this.pieces[i].id,this.color,true);
+                this.pieces[i].position=pos;
+                this.event();
+                console.log(board);
+                console.log(this.pieces[i]);
+            }
+        }
+    }
+
     isChecking(board: Chessboard): boolean {
         for (let piece of this.pieces) {
             piece.updateMoves(board);
@@ -66,15 +80,19 @@ export class Player implements IPlayer, Observed {
         return false;
     }
 
-    addObserver(o: Observed) {
-
+    addObserver(o: Observer) {
+        this.observers.push(o);
     }
 
-    removeObserver(o: Observed) {
-
+    removeObserver(o: Observer) {
+        let index=this.observers.indexOf(o);
+        if(index>=0)
+            this.observers.splice(index,1);
     }
 
     event() {
-
+        for(let o of this.observers){
+            o.update(this);
+        }
     }
 }

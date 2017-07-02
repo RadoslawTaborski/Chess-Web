@@ -1,11 +1,13 @@
 import { IChessPiece } from "./../Interface/IChessPiece"
 
 export interface Observer {
-    update(pieces: IChessPiece[]);
+    update(observed: Observed);
 }
 
 export interface Observed {
-    addObserver(o: Observed);
-    removeObserver(o: Observed);
+    observers: Observer[];
+
+    addObserver(o: Observer);
+    removeObserver(o: Observer);
     event();
 }

@@ -13,6 +13,7 @@ export class King implements IChessPiece {
     position: ChessboardItem;
     readonly sign: string = "King";
     moves: IMove[] = [];
+    potentialMoves: IMove[]=[];
     checking: boolean = false;
     enemies: IChessPiece[] = [];
 
@@ -65,19 +66,11 @@ export class King implements IChessPiece {
 
     private clearField(field: ChessboardItem): boolean {
         for (let enemy of this.enemies)
-            if (enemy instanceof Pawn) {
                 for (let item of enemy.potentialMoves)
                     if (item.target == field){
                         console.log("pawn");
                         return false;
                     }
-            } else {
-                for (let item of enemy.moves)
-                    if (item.target == field){
-                        console.log("else");
-                        return false;
-                    }
-            }
         return true;
     }
 }

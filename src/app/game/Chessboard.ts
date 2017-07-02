@@ -1,6 +1,6 @@
 import { ChessboardItem } from "./ChessboardItem"
 import { Colors } from "./Colors"
-import { Observer } from "./Pattern/ObserverPattern"
+import { Observer, Observed } from "./Pattern/ObserverPattern"
 import { IChessPiece } from "./Interface/IChessPiece"
 import { IPlayer } from "./Interface/IPlayer"
 
@@ -16,8 +16,18 @@ export class Chessboard implements Observer {
         }
     }
     
-    update(pieces: IChessPiece[]){
+    instanceOfIPlayer(object: any): object is IPlayer {
+        return object.name !== undefined;
+    }
 
+    update(o: Observed){
+        if(this.instanceOfIPlayer(o)){
+            console.log(o);
+            for(let piece of o.pieces){
+                console.log("tutaj ");
+                this.board[piece.position.row][piece.position.col].piece=piece;
+            }
+        }
     }
 
     public setPieces(player: IPlayer){

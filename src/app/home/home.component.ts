@@ -53,16 +53,16 @@ export class HomeComponent implements OnInit {
       this.game.changePlayer();
       this.turn=this.game.turn.color;
       this.state=this.game.check?"Szach":"stan normalny"
+      if(this.game.end()){
+        this.state="Szach mat";
+        this.setAllDisabled();
+      }
       this.setEndabledForPlayer();
       this.boardToView(this.game.board);
     } else {
       //console.log("first");
       this.setEndabledForPlayer();
       this.game.update();
-      if(this.game.end()){
-        this.state="Szach mat";
-        this.setAllDisabled();
-      }
       this.firstClick = this.fieldToBoardItem(field);
       if (this.firstClick .piece != null)
         for (let item of this.firstClick .piece.moves) {
