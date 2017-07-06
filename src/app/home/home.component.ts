@@ -15,7 +15,6 @@ export class HomeComponent implements OnInit {
   fields: Field[][];
   rules: Rules;
   game: Game;
-  endMove: boolean;
   firstClick: ChessboardItem;
   turn: Colors;
   state: string;
@@ -28,7 +27,6 @@ export class HomeComponent implements OnInit {
     this.fields = [];
     this.rules = { castling: false, time: 300000, doublePawnSkip: false, whoStarts: Colors.White };
     this.game = new Game(new Player("Gal Anonim", Colors.White, this.rules.time), new Player("Adam", Colors.Black, this.rules.time), this.rules);
-    this.endMove = false;
     this.firstClick = null;
     this.turn = this.game.turn.color;
     this.state = "stan normalny";
@@ -60,7 +58,6 @@ export class HomeComponent implements OnInit {
     if (field.val != this.game.players.indexOf(this.game.turn) + 1) {
       //console.log("second");
       this.game.move(this.firstClick, this.fieldToBoardItem(field));
-      this.endMove = true;
       this.game.changePlayer();
       this.game.update();
       this.turn = this.game.turn.color;
@@ -76,7 +73,7 @@ export class HomeComponent implements OnInit {
       this.setEndabledForPlayer();
       this.firstClick = this.fieldToBoardItem(field);
       if (this.firstClick.piece != null)
-        for (let item of this.firstClick.piece.moves) { //TODO: zrobic aktualizacje dla gracza nie dla pionków
+        for (let item of this.game.turn.moves.filter(item => item.source.piece==this.firstClick.piece)) {
           this.boardItemToField(item.target).setActive(true);
         }
     }

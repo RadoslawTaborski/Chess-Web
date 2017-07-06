@@ -13,7 +13,7 @@ export class King implements IChessPiece {
     position: ChessboardItem;
     readonly sign: string = "King";
     moves: IMove[] = [];
-    potentialMoves: IMove[]=[];
+    potentialMoves: IMove[] = [];
     checking: boolean = false;
     enemies: IChessPiece[] = [];
 
@@ -21,12 +21,12 @@ export class King implements IChessPiece {
     constructor(piece: IChessPiece);
     constructor(pieceOrId: IChessPiece | number, color?: Colors, special?: boolean) {
         if (typeof pieceOrId === "object") {
-            this.id=pieceOrId.id;
-            this.color=pieceOrId.color;
-            this.special=pieceOrId.special;
-            this.sign=pieceOrId.sign;
-            this.checking=pieceOrId.checking;
-            this.position=new ChessboardItem(pieceOrId.position);
+            this.id = pieceOrId.id;
+            this.color = pieceOrId.color;
+            this.special = pieceOrId.special;
+            this.sign = pieceOrId.sign;
+            this.checking = pieceOrId.checking;
+            this.position = new ChessboardItem(pieceOrId.position);
         } else if (typeof pieceOrId === "number" && typeof color === "number" && typeof special === "boolean") {
             this.id = pieceOrId;
             this.color = color;
@@ -56,7 +56,7 @@ export class King implements IChessPiece {
                     if (tmp != null && tmp.piece == null) {
                         if (this.clearField(tmp))
                             this.moves.push(new Move(this.position, tmp, Type.Ordinary));
-                    } else if (tmp != null && tmp.piece!=null && tmp.piece.color != this.color) {
+                    } else if (tmp != null && tmp.piece != null && tmp.piece.color != this.color) {
                         if (this.clearField(tmp))
                             this.moves.push(new Move(this.position, tmp, Type.Capture));
                     }
@@ -65,7 +65,7 @@ export class King implements IChessPiece {
     }
 
     private setEnemies(board: Chessboard) {
-        this.enemies=[];
+        this.enemies = [];
         for (let i = 0; i < 8; ++i)
             for (let j = 0; j < 8; ++j) {
                 let tmp = board.board[i][j];
@@ -77,11 +77,10 @@ export class King implements IChessPiece {
 
     private clearField(field: ChessboardItem): boolean {
         for (let enemy of this.enemies)
-                for (let item of enemy.moves)
-                    if (item.target == field){
-                        console.log("pawn");
-                        return false;
-                    }
+            for (let item of enemy.moves)
+                if (item.target == field) {
+                    return false;
+                }
         return true;
     }
 }

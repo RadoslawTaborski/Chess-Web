@@ -80,23 +80,29 @@ export class Player implements IPlayer {
 
     updateMoves(board: Chessboard, opponent: IPlayer) {
         this.moves = [];
-        //let i=0;
         for (let piece of this.pieces) {
             piece.updateMoves(board);
             this.moves = this.moves.concat(piece.moves);
-            // console.log(++i);
         }
-        //console.log(this.moves);
+        this.leaveCheckBlockingMove(board, opponent);
         this.removeMovesCausesCheck(board, opponent);
-        //console.log(this.moves);
     }
 
-    private removeMovesCausesCheck(board: Chessboard, opponent: IPlayer) {
+    private leaveCheckBlockingMove(board: Chessboard, opponent: IPlayer) {
         for (let i = 0; i < this.moves.length; ++i) {
             if (this.simulateMove(board, opponent, this.moves[i])) {
                 this.moves.splice(i, 1);
                 --i;
-                //console.log("hello");
+                console.log(this.moves);
+            }
+        }
+    }
+
+    private removeMovesCausesCheck(board: Chessboard, opponent: IPlayer){
+        for (let i = 0; i < this.moves.length; ++i) {
+            if (this.simulateMove(board, opponent, this.moves[i])) {
+                this.moves.splice(i, 1);
+                --i;
                 console.log(this.moves);
             }
         }
@@ -108,16 +114,16 @@ export class Player implements IPlayer {
         let thisCopy = new Player(this);
         boardCopy.setPieces(opponentCopy);
         boardCopy.setPieces(thisCopy);
-        let tmp = boardCopy.board[move.target.row][move.target.col];
-        let tmp2 = boardCopy.board[move.source.row][move.source.col];
-        if (tmp.piece != null) {
-            let index = opponentCopy.pieces.indexOf(tmp.piece);
+        let target = boardCopy.board[move.target.row][move.target.col];
+        let source = boardCopy.board[move.source.row][move.source.col];
+        if (target.piece != null) {
+            let index = opponentCopy.pieces.indexOf(target.piece);
             opponentCopy.pieces.splice(index, 1);
         }
-        tmp.piece = tmp2.piece;
-        let index = thisCopy.pieces.indexOf(tmp.piece);
-        thisCopy.pieces[index].position = tmp;
-        tmp2.piece = null;
+        target.piece = source.piece;
+        let index = thisCopy.pieces.indexOf(target.piece);
+        thisCopy.pieces[index].position = target;
+        source.piece = null;
         thisCopy.promotionPawn(boardCopy);
 
         let result = opponentCopy.isChecking(boardCopy);
