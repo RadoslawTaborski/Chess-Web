@@ -4,42 +4,26 @@ import { Move } from "../Move"
 import { Colors } from "./../Colors";
 import { ChessboardItem } from "./../ChessboardItem";
 import { Chessboard } from "./../Chessboard";
+import { ChessPiece, Variant, Pieces } from "./ChessPiece";
 
-export class Rook implements IChessPiece {
-    id: number
-    color: Colors;
-    special: boolean;
-    position: ChessboardItem;
-    readonly sign: string="Rook";
-    moves: IMove[]=[];
-    checking: boolean=false;
-    
-    constructor(id: number, color: Colors, special: boolean);
-    constructor(piece: IChessPiece);
+export class Rook extends ChessPiece {
+    readonly sign;
+
     constructor(pieceOrId: IChessPiece | number, color?: Colors, special?: boolean) {
         if (typeof pieceOrId === "object") {
-            this.id=pieceOrId.id;
-            this.color=pieceOrId.color;
-            this.special=pieceOrId.special;
-            this.sign=pieceOrId.sign;
-            this.checking=pieceOrId.checking;
-            this.position=new ChessboardItem(pieceOrId.position);
+            super(pieceOrId);
         } else if (typeof pieceOrId === "number" && typeof color === "number" && typeof special === "boolean") {
-            this.id = pieceOrId;
-            this.color = color;
-            this.special = special;
+            super(pieceOrId, color, special);
         }
+        this.sign = Pieces.rook;
     }
 
-    isChecking():boolean{
-        return this.checking;
-    }
-
-    cleanMoves(){
-        this.moves=[];
-    }
-
-    updateMoves(board: Chessboard){
-        
+    updateMoves(board: Chessboard) {
+        let variants: Variant[] = [];
+        variants.push(new Variant(1, 0));
+        variants.push(new Variant(-1, 0));
+        variants.push(new Variant(0, 1));
+        variants.push(new Variant(0, -1));
+        this.updateSupport(board, variants, 8);
     }
 }

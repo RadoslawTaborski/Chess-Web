@@ -85,20 +85,9 @@ export class Player implements IPlayer {
             this.moves = this.moves.concat(piece.moves);
         }
         this.leaveCheckBlockingMove(board, opponent);
-        this.removeMovesCausesCheck(board, opponent);
     }
 
     private leaveCheckBlockingMove(board: Chessboard, opponent: IPlayer) {
-        for (let i = 0; i < this.moves.length; ++i) {
-            if (this.simulateMove(board, opponent, this.moves[i])) {
-                this.moves.splice(i, 1);
-                --i;
-                console.log(this.moves);
-            }
-        }
-    }
-
-    private removeMovesCausesCheck(board: Chessboard, opponent: IPlayer){
         for (let i = 0; i < this.moves.length; ++i) {
             if (this.simulateMove(board, opponent, this.moves[i])) {
                 this.moves.splice(i, 1);

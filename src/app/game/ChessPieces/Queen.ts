@@ -4,43 +4,30 @@ import { Move } from "../Move"
 import { Colors } from "./../Colors";
 import { ChessboardItem } from "./../ChessboardItem";
 import { Chessboard } from "./../Chessboard";
+import { ChessPiece, Variant, Pieces } from "./ChessPiece";
 
-export class Queen implements IChessPiece {
-    id: number
-    color: Colors;
-    special: boolean;
-    position: ChessboardItem;
-    readonly sign: string="Queen";
-    moves: IMove[]=[];
-    checking: boolean=false;
+export class Queen extends ChessPiece {
+    readonly sign;
 
-    constructor(id: number, color: Colors, special: boolean);
-    constructor(piece: IChessPiece);
     constructor(pieceOrId: IChessPiece | number, color?: Colors, special?: boolean) {
         if (typeof pieceOrId === "object") {
-            this.id=pieceOrId.id;
-            this.color=pieceOrId.color;
-            this.special=pieceOrId.special;
-            this.sign=pieceOrId.sign;
-            this.checking=pieceOrId.checking;
-            this.position=new ChessboardItem(pieceOrId.position);
+            super(pieceOrId);
         } else if (typeof pieceOrId === "number" && typeof color === "number" && typeof special === "boolean") {
-            this.id = pieceOrId;
-            this.color = color;
-            this.special = special;
+            super(pieceOrId,color,special);
         }
+        this.sign=Pieces.queen;
     }
 
-    isChecking():boolean{
-        return this.checking;
-    }
-
-    cleanMoves(){
-        this.moves=[];
-    }
-
-    updateMoves(board: Chessboard){
-        
-    }
-    
+    updateMoves(board: Chessboard) {
+        let variants: Variant[]=[];
+        variants.push(new Variant(1,1));
+        variants.push(new Variant(-1,1));
+        variants.push(new Variant(1,-1));
+        variants.push(new Variant(-1,-1));
+        variants.push(new Variant(1,0));
+        variants.push(new Variant(-1,0));
+        variants.push(new Variant(0,1));
+        variants.push(new Variant(0,-1));
+        this.updateSupport(board, variants, 8);
+    } 
 }

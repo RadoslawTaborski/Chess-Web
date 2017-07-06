@@ -4,39 +4,18 @@ import { Move } from "../Move"
 import { Colors } from "./../Colors";
 import { ChessboardItem } from "./../ChessboardItem";
 import { Chessboard } from "./../Chessboard";
+import { ChessPiece, Variant, Pieces } from "./ChessPiece";
 
-export class Pawn implements IChessPiece {
-    id: number
-    color: Colors;
-    special: boolean;
-    position: ChessboardItem;
-    readonly sign: string = "pawn";
-    moves: IMove[] = [];
-    checking: boolean = false;
+export class Pawn extends ChessPiece {
+    readonly sign;
 
-    constructor(id: number, color: Colors, special: boolean);
-    constructor(piece: IChessPiece);
     constructor(pieceOrId: IChessPiece | number, color?: Colors, special?: boolean) {
         if (typeof pieceOrId === "object") {
-            this.id=pieceOrId.id;
-            this.color=pieceOrId.color;
-            this.special=pieceOrId.special;
-            this.sign=pieceOrId.sign;
-            this.checking=pieceOrId.checking;
-            this.position=new ChessboardItem(pieceOrId.position);
+            super(pieceOrId);
         } else if (typeof pieceOrId === "number" && typeof color === "number" && typeof special === "boolean") {
-            this.id = pieceOrId;
-            this.color = color;
-            this.special = special;
+            super(pieceOrId, color, special);
         }
-    }
-
-    isChecking(): boolean {
-        return this.checking;
-    }
-
-    cleanMoves() {
-        this.moves = [];
+        this.sign = Pieces.pawn;
     }
 
     updateMoves(board: Chessboard) {
@@ -61,6 +40,5 @@ export class Pawn implements IChessPiece {
                 }
             }
         }
-        //console.log("len " +this.moves.length);
     }
 } //TODO: dodać poruszanie dwóch pól do przodu
