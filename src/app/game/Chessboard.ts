@@ -3,69 +3,86 @@ import { Colors } from "./Colors"
 import { Observer, Observed } from "./Pattern/ObserverPattern"
 import { IChessPiece } from "./Interface/IChessPiece"
 import { IPlayer } from "./Interface/IPlayer"
+import { IMove, Type } from "./Interface/IMove"
 
 export class Chessboard implements Observer {
-    board: ChessboardItem[][]=[];
+    board: ChessboardItem[][] = [];
 
-    constructor(){
-        for(var i: number = 0; i < 8; i++) {
-            this.board[i] = [];
-            for(var j: number = 0; j< 8; j++) {
-                this.board[i][j] = new ChessboardItem(i,j);
+    constructor(board?: Chessboard) {
+        if (typeof board === "object") {
+            for (var i: number = 0; i < 8; i++) {
+                this.board[i] = [];
+                for (var j: number = 0; j < 8; j++) {
+                    this.board[i][j] = new ChessboardItem(board.board[i][j]);
+                }
+            }
+        } else {
+            for (var i: number = 0; i < 8; i++) {
+                this.board[i] = [];
+                for (var j: number = 0; j < 8; j++) {
+                    this.board[i][j] = new ChessboardItem(i, j);
+                }
             }
         }
     }
-    
-    instanceOfIPlayer(object: any): object is IPlayer {
+
+    private instanceOfIPlayer(object: any): object is IPlayer {
         return object.name !== undefined;
     }
 
-    update(o: Observed){
-        if(this.instanceOfIPlayer(o)){
-            console.log(o);
-            for(let piece of o.pieces){
-                console.log("tutaj ");
-                this.board[piece.position.row][piece.position.col].piece=piece;
+    update(o: Observed) {
+        if (this.instanceOfIPlayer(o)) {
+           // console.log(o);
+            for (let piece of o.pieces) {
+             //   console.log("tutaj ");
+                this.board[piece.position.row][piece.position.col].piece = piece;
             }
         }
     }
 
-    public setPieces(player: IPlayer){
-        if(player.color==Colors.Black){
-            this.setField(player.pieces[0],this.board[0][4]);
-            this.setField(player.pieces[1],this.board[0][3]);
-            this.setField(player.pieces[2],this.board[0][2]);
-            this.setField(player.pieces[3],this.board[0][5]);
-            this.setField(player.pieces[4],this.board[0][1]);
-            this.setField(player.pieces[5],this.board[0][6]);
-            this.setField(player.pieces[6],this.board[0][0]);
-            this.setField(player.pieces[7],this.board[0][7]);
-            for(let i=0; i<8;++i){
-                this.setField(player.pieces[8+i],this.board[1][i]);
+    public setInitialPieces(player: IPlayer) {
+        if (player.color == Colors.Black) {
+            this.setField(player.pieces[0], this.board[0][4]);
+            this.setField(player.pieces[1], this.board[0][3]);
+            this.setField(player.pieces[2], this.board[0][2]);
+            this.setField(player.pieces[3], this.board[0][5]);
+            this.setField(player.pieces[4], this.board[0][1]); 
+            this.setField(player.pieces[5], this.board[0][6]);
+            this.setField(player.pieces[6], this.board[0][0]);
+            this.setField(player.pieces[7], this.board[0][7]);
+            for (let i = 0; i < 8; ++i) {
+                this.setField(player.pieces[8 + i], this.board[1][i]);
             }
-        }else{
-            this.setField(player.pieces[0],this.board[7][4]);
-            this.setField(player.pieces[1],this.board[7][3]);
-            this.setField(player.pieces[2],this.board[7][2]);
-            this.setField(player.pieces[3],this.board[7][5]);
-            this.setField(player.pieces[4],this.board[7][1]);
-            this.setField(player.pieces[5],this.board[7][6]);
-            this.setField(player.pieces[6],this.board[7][0]);
-            this.setField(player.pieces[7],this.board[7][7]);
-            for(let i=0; i<8;++i){
-                this.setField(player.pieces[8+i],this.board[6][i]);
+        } else {
+            this.setField(player.pieces[0], this.board[7][4]);
+            this.setField(player.pieces[1], this.board[7][3]);
+            this.setField(player.pieces[2], this.board[7][2]);
+            this.setField(player.pieces[3], this.board[7][5]);
+            this.setField(player.pieces[4], this.board[7][1]);
+            this.setField(player.pieces[5], this.board[7][6]);
+            this.setField(player.pieces[6], this.board[7][0]);
+            this.setField(player.pieces[7], this.board[7][7]);
+            for (let i = 0; i < 8; ++i) {
+                this.setField(player.pieces[8 + i], this.board[6][i]);
             }
         }
     }
 
-    getField(row: number, col:number): ChessboardItem{
-        if(row >=0 && row <8 && col>=0 && col < 8)
+    public setPieces(player: IPlayer) {
+        for(let piece of player.pieces){
+            this.setField(piece, this.board[piece.position.row][piece.position.col]);
+        }
+    }
+
+    getField(row: number, col: number): ChessboardItem {
+        if (row >= 0 && row < 8 && col >= 0 && col < 8)
             return this.board[row][col];
         return null;
     }
 
-    private setField(piece: IChessPiece, field: ChessboardItem){
-        piece.position=field;
-        field.piece=piece;
+    private setField(piece: IChessPiece, field: ChessboardItem) {
+        //console.log(piece);
+        piece.position = field;
+        field.piece = piece;
     }
 }

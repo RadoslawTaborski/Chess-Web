@@ -12,13 +12,23 @@ export class Bishop implements IChessPiece {
     position: ChessboardItem;
     readonly sign: string = "Bishop";
     moves: IMove[] = [];
-    potentialMoves: IMove[] = [];
     checking: boolean = false;
 
-    constructor(id: number, color: Colors, special: boolean) {
-        this.id = id;
-        this.color = color;
-        this.special = special;
+    constructor(id: number, color: Colors, special: boolean);
+    constructor(piece: IChessPiece);
+    constructor(pieceOrId: IChessPiece | number, color?: Colors, special?: boolean) {
+        if (typeof pieceOrId === "object") {
+            this.id = pieceOrId.id;
+            this.color = pieceOrId.color;
+            this.special = pieceOrId.special;
+            this.sign = pieceOrId.sign;
+            this.checking = pieceOrId.checking;
+            this.position = new ChessboardItem(pieceOrId.position);
+        } else if (typeof pieceOrId === "number" && typeof color === "number" && typeof special === "boolean") {
+            this.id = pieceOrId;
+            this.color = color;
+            this.special = special;
+        }
     }
 
     isChecking(): boolean {
@@ -26,15 +36,14 @@ export class Bishop implements IChessPiece {
     }
 
     cleanMoves() {
+        this.checking = false;
         this.moves = [];
     }
 
     updateMoves(board: Chessboard) {
-        this.checking = false;
         this.cleanMoves();
         let row = this.position.row;
         let col = this.position.col;
-        this.potentialMoves = [];
         let variants = [];
         variants.push(new Variant(1, 1));
         variants.push(new Variant(-1, 1));
@@ -42,29 +51,27 @@ export class Bishop implements IChessPiece {
         variants.push(new Variant(-1, -1));
 
         for (let v of variants) {
-            for (let i = 0; i < 8; ++i) {
+            for (let i = 1; i < 8; ++i) {
                 let tmp = board.getField(row + i * v.rowMultiplier, col + i * v.colMultiplier);
                 if (tmp != null) {
                     if (tmp.piece == null) {
                         this.moves.push(new Move(this.position, tmp, Type.Ordinary));
-                        this.potentialMoves.push(new Move(this.position, tmp, Type.Ordinary));
                     } else if (tmp.piece.color != this.color) {
                         if (tmp.piece.id != 1) {
                             this.moves.push(new Move(this.position, tmp, Type.Capture));
-                            this.potentialMoves.push(new Move(this.position, tmp, Type.Capture));
                             break;
                         } else {
                             this.checking = true;
                             break;
                         }
                     } else if (tmp.piece.color == this.color) {
-                        this.potentialMoves.push(new Move(this.position, tmp, Type.Capture));
+                        break;
                     }
                 }
             }
         }
     }
-
+    
 }
 
 class Variant {

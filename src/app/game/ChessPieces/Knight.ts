@@ -12,13 +12,23 @@ export class Knight implements IChessPiece {
     position: ChessboardItem;
     readonly sign: string="Knight";
     moves: IMove[]=[];
-    potentialMoves: IMove[]=[];
     checking: boolean=false;
 
-    constructor(id: number, color: Colors, special:boolean){
-        this.id=id;
-        this.color=color;
-        this.special=special;
+    constructor(id: number, color: Colors, special: boolean);
+    constructor(piece: IChessPiece);
+    constructor(pieceOrId: IChessPiece | number, color?: Colors, special?: boolean) {
+        if (typeof pieceOrId === "object") {
+            this.id=pieceOrId.id;
+            this.color=pieceOrId.color;
+            this.special=pieceOrId.special;
+            this.sign=pieceOrId.sign;
+            this.checking=pieceOrId.checking;
+            this.position=new ChessboardItem(pieceOrId.position);
+        } else if (typeof pieceOrId === "number" && typeof color === "number" && typeof special === "boolean") {
+            this.id = pieceOrId;
+            this.color = color;
+            this.special = special;
+        }
     }
 
     isChecking():boolean{

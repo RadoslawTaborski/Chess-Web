@@ -19,18 +19,20 @@ export class Game {
         this.rules=rules;
         this.board=new Chessboard();
         this.players[0].addObserver(this.board);
+        this.players[0].addObserver(this.players[0]);
         this.players[1].addObserver(this.board);
+        this.players[1].addObserver(this.players[1]);
         this.turn=this.firstPlayerStarts()?this.players[0]:this.players[1];
         this.pause=this.firstPlayerStarts()?this.players[1]:this.players[0];
     }
 
     setPiecesOnBoard(){
-        this.board.setPieces(this.players[0]);
-        this.board.setPieces(this.players[1]);
+        this.board.setInitialPieces(this.players[0]);
+        this.board.setInitialPieces(this.players[1]);
     }
 
     update(){
-        this.turn.updateMoves(this.board,this.check);
+        this.turn.updateMoves(this.board,this.pause);
     }
 
     changePlayer(){
@@ -58,7 +60,7 @@ export class Game {
     }
 
     end(): boolean{
-        if(this.check && this.turn.pieces[0].moves.length==0){ //TODO: może być również opcja z zasłonięciem króla :(
+        if(this.check && this.turn.moves.length==0){ //TODO: może być również opcja z zasłonięciem króla :(
             return true;
         }
         return false;
@@ -66,6 +68,6 @@ export class Game {
 
     private Capture(player: IPlayer, piece: IChessPiece){
         let index=player.pieces.indexOf(piece);
-            player.pieces.splice(index,1);
+        player.pieces.splice(index,1);
     }
 }

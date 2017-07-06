@@ -12,17 +12,27 @@ import { Colors } from "../game/Colors";
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
-  fields: Field[][] = [];
-  rules: Rules = { castling: false, time: 300000, doublePawnSkip: false, whoStarts: Colors.White };
-  game: Game = new Game(new Player("Gal Anonim", Colors.White, this.rules.time), new Player("Adam", Colors.Black, this.rules.time), this.rules);
-  endMove: boolean = false;
-  firstClick: ChessboardItem = null;
-  turn: Colors=this.game.turn.color;
-  state: string="stan normalny";
+  fields: Field[][];
+  rules: Rules;
+  game: Game;
+  endMove: boolean;
+  firstClick: ChessboardItem;
+  turn: Colors;
+  state: string;
 
-  constructor() { }
+  constructor() {
+
+  }
 
   ngOnInit() {
+    this.fields = [];
+    this.rules = { castling: false, time: 300000, doublePawnSkip: false, whoStarts: Colors.White };
+    this.game = new Game(new Player("Gal Anonim", Colors.White, this.rules.time), new Player("Adam", Colors.Black, this.rules.time), this.rules);
+    this.endMove = false;
+    this.firstClick = null;
+    this.turn = this.game.turn.color;
+    this.state = "stan normalny";
+
     for (var i: number = 0; i < 8; i++) {
       this.fields[i] = [];
       for (var j: number = 0; j < 8; j++) {
@@ -31,6 +41,7 @@ export class HomeComponent implements OnInit {
     }
     this.game.setPiecesOnBoard();
     this.boardToView(this.game.board);
+    this.game.update();
     this.setEndabledForPlayer();
   }
 
@@ -39,8 +50,8 @@ export class HomeComponent implements OnInit {
       for (let j = 0; j < 8; ++j) {
         if (this.game.board.board[i][j].piece != null) {
           this.fields[i][j].setPiece(this.game.board.board[i][j].piece.sign, this.game.board.board[i][j].piece.color);
-        }else{
-          this.fields[i][j].setPiece("",0)
+        } else {
+          this.fields[i][j].setPiece("", 0)
         }
       }
   }
@@ -51,10 +62,11 @@ export class HomeComponent implements OnInit {
       this.game.move(this.firstClick, this.fieldToBoardItem(field));
       this.endMove = true;
       this.game.changePlayer();
-      this.turn=this.game.turn.color;
-      this.state=this.game.check?"Szach":"stan normalny"
-      if(this.game.end()){
-        this.state="Szach mat";
+      this.game.update();
+      this.turn = this.game.turn.color;
+      this.state = this.game.check ? "Szach" : "stan normalny"
+      if (this.game.end()) {
+        this.state = "Szach mat";
         this.setAllDisabled();
       }
       this.setEndabledForPlayer();
@@ -62,10 +74,9 @@ export class HomeComponent implements OnInit {
     } else {
       //console.log("first");
       this.setEndabledForPlayer();
-      this.game.update();
       this.firstClick = this.fieldToBoardItem(field);
-      if (this.firstClick .piece != null)
-        for (let item of this.firstClick .piece.moves) {
+      if (this.firstClick.piece != null)
+        for (let item of this.firstClick.piece.moves) { //TODO: zrobic aktualizacje dla gracza nie dla pionków
           this.boardItemToField(item.target).setActive(true);
         }
     }
@@ -87,15 +98,10 @@ export class HomeComponent implements OnInit {
   }
 
   private setEndabledForPlayer() {
-    for (let i = 0; i < 8; ++i)
-      for (let j = 0; j < 8; ++j) {
-        let tmp = this.fields[i][j];
-        if (tmp.val == this.game.players.indexOf(this.game.turn) + 1)
-          tmp.setActive(true);
-        else {
-          tmp.setActive(false);
-        }
-      }
+    this.setAllDisabled();
+    for (let move of this.game.turn.moves) {
+      this.fields[move.source.row][move.source.col].setActive(true);
+    }
   }
 }
 

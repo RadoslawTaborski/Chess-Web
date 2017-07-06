@@ -12,13 +12,23 @@ export class Pawn implements IChessPiece {
     position: ChessboardItem;
     readonly sign: string = "pawn";
     moves: IMove[] = [];
-    potentialMoves: IMove[] = [];
     checking: boolean = false;
 
-    constructor(id: number, color: Colors, special: boolean) {
-        this.id = id;
-        this.color = color;
-        this.special = special;
+    constructor(id: number, color: Colors, special: boolean);
+    constructor(piece: IChessPiece);
+    constructor(pieceOrId: IChessPiece | number, color?: Colors, special?: boolean) {
+        if (typeof pieceOrId === "object") {
+            this.id=pieceOrId.id;
+            this.color=pieceOrId.color;
+            this.special=pieceOrId.special;
+            this.sign=pieceOrId.sign;
+            this.checking=pieceOrId.checking;
+            this.position=new ChessboardItem(pieceOrId.position);
+        } else if (typeof pieceOrId === "number" && typeof color === "number" && typeof special === "boolean") {
+            this.id = pieceOrId;
+            this.color = color;
+            this.special = special;
+        }
     }
 
     isChecking(): boolean {
@@ -32,7 +42,6 @@ export class Pawn implements IChessPiece {
     updateMoves(board: Chessboard) {
         this.checking = false;
         this.cleanMoves();
-        this.potentialMoves = [];
         this.updateMovesColor(board, this.color);
     }
 
@@ -44,16 +53,14 @@ export class Pawn implements IChessPiece {
             let tmp = board.getField(row + forward, col + i);
             if (i == 0 && tmp != null && tmp.piece == null) {
                 this.moves.push(new Move(this.position, tmp, Type.Ordinary))
-            } else if (i!=0 && tmp != null && tmp.piece != null && tmp.piece.color != color) {
+            } else if (i != 0 && tmp != null && tmp.piece != null && tmp.piece.color != color) {
                 if (tmp.piece.id != 1) {
                     this.moves.push(new Move(this.position, tmp, Type.Capture))
                 } else {
                     this.checking = true;
                 }
             }
-            if (i!=0 && tmp != null) {
-                this.potentialMoves.push(new Move(this.position, tmp, Type.Capture))
-            }
         }
+        //console.log("len " +this.moves.length);
     }
 } //TODO: dodać poruszanie dwóch pól do przodu

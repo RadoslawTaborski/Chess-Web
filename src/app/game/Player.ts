@@ -1,5 +1,5 @@
 import { IPlayer } from "./Interface/IPlayer"
-import { Observer } from "./Pattern/ObserverPattern"
+import { Observer, Observed } from "./Pattern/ObserverPattern"
 import { IChessPiece } from "./Interface/IChessPiece"
 import { Pawn } from "./ChessPieces/Pawn"
 import { Rook } from "./ChessPieces/Rook"
@@ -13,28 +13,64 @@ import { Chessboard } from "./Chessboard"
 import { IMove, Type } from "./Interface/IMove"
 
 export class Player implements IPlayer {
-    observers: Observer[]=[];
+    observers: Observer[] = [];
     name: string = "";
     color: Colors;
     pieces: IChessPiece[] = [];
     time: number;
     moves: IMove[] = [];
 
-    constructor(name: string, color: Colors, time: number) {
-        this.name = name;
-        this.color = color;
-        this.time = time;
+    constructor(name: string, color: Colors, time: number);
+    constructor(player: IPlayer);
+    constructor(playerOrName: IPlayer | string, color?: Colors, time?: number) {
+        if (typeof playerOrName === "object") {
+            this.name = playerOrName.name;
+            this.color = playerOrName.color;
+            this.time = playerOrName.time;
+            for (let item of playerOrName.pieces) {
+                switch (item.sign) {
+                    case "Rook": { //TODO: nazwy do osobnego pliku
+                        this.pieces.push(new Rook(item));
+                        break;
+                    }
+                    case "Bishop": {
+                        this.pieces.push(new Bishop(item));
+                        break;
+                    }
+                    case "Knight": {
+                        this.pieces.push(new Knight(item)); 
+                        break;
+                    }
+                    case "Queen": {
+                        this.pieces.push(new Queen(item)); 
+                        break;
+                    }
+                    case "King": {
+                        this.pieces.push(new King(item));
+                        break;
+                    }
+                    case "pawn": {
+                        this.pieces.push(new Pawn(item)); 
+                        break;
+                    }
+                }
+            }
+        } else if (typeof playerOrName === "string" && typeof color === "number" && typeof time === "number") {
+            this.name = name;
+            this.color = color;
+            this.time = time;
 
-        this.pieces.push(new King(1, color, true));
-        this.pieces.push(new Queen(2, color, true));
-        this.pieces.push(new Bishop(3, color, true));
-        this.pieces.push(new Bishop(4, color, true));
-        this.pieces.push(new Knight(5, color, true));
-        this.pieces.push(new Knight(6, color, true));
-        this.pieces.push(new Rook(7, color, true));
-        this.pieces.push(new Rook(8, color, true));
-        for (let i = 0; i < 8; ++i) {
-            this.pieces.push(new Pawn(9 + i, color, false));
+            this.pieces.push(new King(1, color, true));
+            this.pieces.push(new Queen(2, color, true));
+            this.pieces.push(new Bishop(3, color, true));
+            this.pieces.push(new Bishop(4, color, true));
+            this.pieces.push(new Knight(5, color, true));
+            this.pieces.push(new Knight(6, color, true));
+            this.pieces.push(new Rook(7, color, true));
+            this.pieces.push(new Rook(8, color, true));
+            for (let i = 0; i < 8; ++i) {
+                this.pieces.push(new Pawn(9 + i, color, false));
+            }
         }
     }
 
@@ -42,31 +78,60 @@ export class Player implements IPlayer {
 
     }
 
-    updateMoves(board: Chessboard, checked: boolean) {
+    updateMoves(board: Chessboard, opponent: IPlayer) {
         this.moves = [];
-        if (!checked) {
-            for (let piece of this.pieces) {
-                piece.updateMoves(board);
-                this.moves.concat(piece.moves);
+        //let i=0;
+        for (let piece of this.pieces) {
+            piece.updateMoves(board);
+            this.moves = this.moves.concat(piece.moves);
+            // console.log(++i);
+        }
+        //console.log(this.moves);
+        this.removeMovesCausesCheck(board, opponent);
+        //console.log(this.moves);
+    }
+
+    private removeMovesCausesCheck(board: Chessboard, opponent: IPlayer) {
+        for (let i = 0; i < this.moves.length; ++i) {
+            if (this.simulateMove(board, opponent, this.moves[i])) {
+                this.moves.splice(i, 1);
+                --i;
+                //console.log("hello");
+                console.log(this.moves);
             }
-        } else {
-            for (let piece of this.pieces) {
-                piece.cleanMoves();
-            }
-            this.pieces[0].updateMoves(board);
-            this.moves.concat(this.pieces[0].moves);
         }
     }
 
-    promotionPawn(board: Chessboard){
-        for (let i=0; i<this.pieces.length;++i){
-            if (this.pieces[i] instanceof Pawn && (this.pieces[i].position.row==0 || this.pieces[i].position.row==7)) {
-                let pos=this.pieces[i].position;
-                this.pieces[i]=new Queen(this.pieces[i].id,this.color,true);
-                this.pieces[i].position=pos;
+    private simulateMove(board: Chessboard, opponent: IPlayer, move: IMove): boolean {
+        let boardCopy = new Chessboard();
+        let opponentCopy = new Player(opponent);
+        let thisCopy = new Player(this);
+        boardCopy.setPieces(opponentCopy);
+        boardCopy.setPieces(thisCopy);
+        let tmp = boardCopy.board[move.target.row][move.target.col];
+        let tmp2 = boardCopy.board[move.source.row][move.source.col];
+        if (tmp.piece != null) {
+            let index = opponentCopy.pieces.indexOf(tmp.piece);
+            opponentCopy.pieces.splice(index, 1);
+        }
+        tmp.piece = tmp2.piece;
+        let index = thisCopy.pieces.indexOf(tmp.piece);
+        thisCopy.pieces[index].position = tmp;
+        tmp2.piece = null;
+        thisCopy.promotionPawn(boardCopy);
+
+        let result = opponentCopy.isChecking(boardCopy);
+
+        return result;
+    }
+
+    promotionPawn(board: Chessboard) {
+        for (let i = 0; i < this.pieces.length; ++i) {
+            if (this.pieces[i] instanceof Pawn && (this.pieces[i].position.row == 0 || this.pieces[i].position.row == 7)) {
+                let pos = this.pieces[i].position;
+                this.pieces[i] = new Queen(this.pieces[i].id, this.color, true);
+                this.pieces[i].position = pos;
                 this.event();
-                console.log(board);
-                console.log(this.pieces[i]);
             }
         }
     }
@@ -80,18 +145,22 @@ export class Player implements IPlayer {
         return false;
     }
 
+    update(observed: Observed) {
+
+    }
+
     addObserver(o: Observer) {
         this.observers.push(o);
     }
 
     removeObserver(o: Observer) {
-        let index=this.observers.indexOf(o);
-        if(index>=0)
-            this.observers.splice(index,1);
+        let index = this.observers.indexOf(o);
+        if (index >= 0)
+            this.observers.splice(index, 1);
     }
 
     event() {
-        for(let o of this.observers){
+        for (let o of this.observers) {
             o.update(this);
         }
     }

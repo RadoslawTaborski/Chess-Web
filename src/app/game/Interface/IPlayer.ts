@@ -4,7 +4,7 @@ import { Chessboard } from "./../Chessboard"
 import { IMove } from "./IMove"
 import { Observed, Observer } from "../Pattern/ObserverPattern"
 
-export interface IPlayer extends Observed {
+export interface IPlayer extends Observed, Observer {
     name: string;
     color: Colors;
     pieces: IChessPiece[];
@@ -12,7 +12,7 @@ export interface IPlayer extends Observed {
     moves: IMove[];
 
     makeMove();
-    updateMoves(board: Chessboard, checked: boolean);
+    updateMoves(board: Chessboard, opponent: IPlayer);
     isChecking(board: Chessboard):boolean;
     promotionPawn(board: Chessboard);
 }
