@@ -26,7 +26,7 @@ export class HomeComponent implements OnInit {
   ngOnInit() {
     this.fields = [];
     this.rules = { castling: false, time: 300000, doublePawnSkip: false, whoStarts: Colors.White };
-    this.game = new Game(new Player("Gal Anonim", Colors.White, this.rules.time), new Player("Adam", Colors.Black, this.rules.time), this.rules);
+    this.game = new Game(new Player("Gal Anonim", Colors.White, Rules.time), new Player("Adam", Colors.Black, Rules.time), this.rules);
     this.firstClick = null;
     this.turn = this.game.turn.color;
     this.state = "stan normalny";

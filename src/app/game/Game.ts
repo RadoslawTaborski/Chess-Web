@@ -10,7 +10,6 @@ import { Colors } from "./Colors";
 export class Game {
     players: IPlayer[]=[];
     board: Chessboard;
-    rules: Rules; 
     turn: IPlayer;
     pause: IPlayer;
     check: boolean=false;
@@ -19,7 +18,6 @@ export class Game {
     constructor(player1: IPlayer, player2: IPlayer, rules: Rules){
         this.players.push(player1);
         this.players.push(player2);
-        this.rules=rules;
         this.board=new Chessboard();
         this.players[0].addObserver(this.board);
         this.players[0].addObserver(this.players[0]);
@@ -47,7 +45,7 @@ export class Game {
     }
 
     firstPlayerStarts(): boolean {
-        return (this.players[0].color==this.rules.whoStarts)?true:false;
+        return (this.players[0].color==Rules.whoStarts)?true:false;
     }
 
     isPromotion(): boolean{

@@ -1,8 +1,8 @@
 import { Colors } from "./Colors"
 
 export class Rules {
-   readonly castling: boolean;
-   readonly doublePawnSkip: boolean;
-   readonly time: number;
-   readonly whoStarts: Colors;
+   static readonly castling: boolean=true;
+   static readonly doublePawnSkip: boolean=true;
+   static readonly time: number=900000;
+   static readonly whoStarts: Colors=Colors.White;
 }

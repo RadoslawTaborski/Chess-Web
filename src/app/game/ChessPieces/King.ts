@@ -1,6 +1,7 @@
 import { IChessPiece } from "../Interface/IChessPiece"
 import { IMove, Type } from "../Interface/IMove"
 import { Colors } from "./../Colors";
+import { Rules } from "./../Rules";
 import { Move } from "./../Move";
 import { Pawn } from "./../ChessPieces/Pawn";
 import { ChessboardItem } from "./../ChessboardItem";
@@ -33,7 +34,7 @@ export class King extends ChessPiece {
         variants.push(new Variant(0, -1));
         this.updateSupport(board, variants, 2);
 
-        if (this.firstmove) {
+        if (Rules.castling && this.firstmove) {
             let row = this.position.row;
             let col = this.position.col;
             variants=[];
