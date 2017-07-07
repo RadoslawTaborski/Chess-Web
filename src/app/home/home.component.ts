@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Game } from "../game/Game";
+import { Pieces } from "../game/ChessPieces/ChessPiece";
 import { Player } from "../game/Player";
 import { Rules } from "../game/Rules";
 import { Chessboard } from "../game/Chessboard";
@@ -18,6 +19,7 @@ export class HomeComponent implements OnInit {
   firstClick: ChessboardItem;
   turn: Colors;
   state: string;
+  prom: boolean;
 
   constructor() {
 
@@ -30,7 +32,8 @@ export class HomeComponent implements OnInit {
     this.firstClick = null;
     this.turn = this.game.turn.color;
     this.state = "stan normalny";
-
+    this.prom=false;
+    
     for (var i: number = 0; i < 8; i++) {
       this.fields[i] = [];
       for (var j: number = 0; j < 8; j++) {
@@ -54,10 +57,33 @@ export class HomeComponent implements OnInit {
       }
   }
 
+  promotion(piece: string){
+    console.log(piece);
+    this.game.promotionPawn(piece);
+    this.game.changePlayer();
+      this.game.update();
+      this.turn = this.game.turn.color;
+      this.state = this.game.check ? "Szach" : "stan normalny"
+      if (this.game.end()) {
+        this.state = "Szach mat";
+        this.setAllDisabled();
+      }
+      this.setEndabledForPlayer();
+      this.boardToView(this.game.board);
+      this.prom=false;
+  }
+
   move(field: Field) {
     if (field.val != this.game.players.indexOf(this.game.turn) + 1) {
       //console.log("second");
       this.game.move(this.firstClick, this.fieldToBoardItem(field));
+      if(this.game.isPromotion()){
+        this.state = "awans pionka";
+        this.prom=true;
+        this.setAllDisabled();
+        this.boardToView(this.game.board);
+        return;
+      }
       this.game.changePlayer();
       this.game.update();
       this.turn = this.game.turn.color;

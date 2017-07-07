@@ -1,6 +1,7 @@
 import { IPlayer } from "./Interface/IPlayer"
 import { Observer, Observed } from "./Pattern/ObserverPattern"
 import { IChessPiece } from "./Interface/IChessPiece"
+import { ChessPiece, Pieces } from "./ChessPieces/ChessPiece"
 import { Pawn } from "./ChessPieces/Pawn"
 import { Rook } from "./ChessPieces/Rook"
 import { Bishop } from "./ChessPieces/Bishop"
@@ -38,11 +39,11 @@ export class Player implements IPlayer {
                         break;
                     }
                     case "Knight": {
-                        this.pieces.push(new Knight(item)); 
+                        this.pieces.push(new Knight(item));
                         break;
                     }
                     case "Queen": {
-                        this.pieces.push(new Queen(item)); 
+                        this.pieces.push(new Queen(item));
                         break;
                     }
                     case "King": {
@@ -50,7 +51,7 @@ export class Player implements IPlayer {
                         break;
                     }
                     case "pawn": {
-                        this.pieces.push(new Pawn(item)); 
+                        this.pieces.push(new Pawn(item));
                         break;
                     }
                 }
@@ -108,18 +109,48 @@ export class Player implements IPlayer {
         let index = thisCopy.pieces.indexOf(target.piece);
         thisCopy.pieces[index].position = target;
         source.piece = null;
-        thisCopy.promotionPawn(boardCopy);
+        if(thisCopy.isPromotion(boardCopy)){
+            thisCopy.promotionPawn(boardCopy, Pieces.queen); //TODO: niekoniecznie queen
+        }
 
         let result = opponentCopy.isChecking(boardCopy);
 
         return result;
     }
 
-    promotionPawn(board: Chessboard) {
+    isPromotion(board: Chessboard): boolean {
+        for (let i = 0; i < this.pieces.length; ++i) {
+            if (this.pieces[i] instanceof Pawn && (this.pieces[i].position.row == 0 || this.pieces[i].position.row == 7)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    promotionPawn(board: Chessboard, piece: string) {
+        console.log(piece);
         for (let i = 0; i < this.pieces.length; ++i) {
             if (this.pieces[i] instanceof Pawn && (this.pieces[i].position.row == 0 || this.pieces[i].position.row == 7)) {
                 let pos = this.pieces[i].position;
-                this.pieces[i] = new Queen(this.pieces[i].id, this.color, true);
+                switch (piece) {
+                    case Pieces.queen: {
+                        console.log("tu")
+                        this.pieces[i] = new Queen(this.pieces[i].id, this.color, true);
+                        break;
+                    }
+                    case Pieces.rook: {
+                        this.pieces[i] = new Rook(this.pieces[i].id, this.color, true);
+                        break;
+                    }
+                    case Pieces.bishop: {
+                        this.pieces[i] = new Bishop(this.pieces[i].id, this.color, true);
+                        break;
+                    }
+                    case Pieces.knight: {
+                        this.pieces[i] = new Knight(this.pieces[i].id, this.color, true);
+                        break;
+                    }
+                }
                 this.pieces[i].position = pos;
                 this.event();
             }

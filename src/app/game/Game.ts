@@ -12,6 +12,7 @@ export class Game {
     turn: IPlayer;
     pause: IPlayer;
     check: boolean=false;
+    promotion: boolean=false;
 
     constructor(player1: IPlayer, player2: IPlayer, rules: Rules){
         this.players.push(player1);
@@ -47,7 +48,16 @@ export class Game {
         return (this.players[0].color==this.rules.whoStarts)?true:false;
     }
 
-    move(first:ChessboardItem, second:ChessboardItem){
+    isPromotion(): boolean{
+        return this.promotion;
+    }
+
+    promotionPawn(piece: string){
+        this.turn.promotionPawn(this.board, piece);
+        console.log(piece);
+    }
+
+    move(first:ChessboardItem, second:ChessboardItem, piece?: string){
         //console.log(first, second);
         if(second.piece!=null){
             this.Capture(this.pause,second.piece);
@@ -56,7 +66,7 @@ export class Game {
         let index=this.turn.pieces.indexOf(second.piece);
         this.turn.pieces[index].changePosiotion(second);
         first.piece=null;
-        this.turn.promotionPawn(this.board);
+        this.promotion=this.turn.isPromotion(this.board);
     }
 
     end(): boolean{
