@@ -13,6 +13,7 @@ export abstract class ChessPiece implements IChessPiece {
     abstract readonly sign: string;
     moves: IMove[] = [];
     checking: boolean = false;
+    firstmove: boolean=true;
 
     constructor(id: number, color: Colors, special: boolean);
     constructor(piece: IChessPiece);
@@ -41,6 +42,7 @@ export abstract class ChessPiece implements IChessPiece {
     }
 
     changePosiotion(field: ChessboardItem){
+        this.firstmove=false;
         this.position = field;
     }
 

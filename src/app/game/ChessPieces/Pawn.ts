@@ -8,7 +8,6 @@ import { ChessPiece, Variant, Pieces } from "./ChessPiece";
 
 export class Pawn extends ChessPiece {
     readonly sign;
-    firstmove: boolean;
 
     constructor(pieceOrId: IChessPiece | number, color?: Colors, special?: boolean) {
         if (typeof pieceOrId === "object") {
@@ -48,9 +47,4 @@ export class Pawn extends ChessPiece {
             this.moves.push(new Move(this.position, tmp, Type.Ordinary))
         }
     }
-
-    changePosiotion(field: ChessboardItem){
-        this.firstmove=false;
-        this.position = field;
-    }
-} //TODO: dodać poruszanie dwóch pól do przodu
+} 

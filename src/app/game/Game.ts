@@ -1,6 +1,8 @@
 import { IPlayer } from "./Interface/IPlayer";
 import { IChessPiece } from "./Interface/IChessPiece";
+import { IMove, Type } from "./Interface/IMove";
 import { Chessboard } from "./Chessboard";
+import { Move } from "./Move";
 import { ChessboardItem } from "./ChessboardItem";
 import { Rules } from "./Rules";
 import { Colors } from "./Colors";
@@ -57,23 +59,50 @@ export class Game {
         console.log(piece);
     }
 
-    move(first:ChessboardItem, second:ChessboardItem, piece?: string){
+    move(first:ChessboardItem, second:ChessboardItem){
+        let move=this.findMove(first,second);
         //console.log(first, second);
-        if(second.piece!=null){
-            this.Capture(this.pause,second.piece);
+        if(move.type==Type.Capture){
+            this.Capture(this.pause,move.target.piece);
+            this.moveWithoutCapture(move);
+            this.promotion=this.turn.isPromotion(this.board);
         }
-        second.piece=first.piece;
-        let index=this.turn.pieces.indexOf(second.piece);
-        this.turn.pieces[index].changePosiotion(second);
-        first.piece=null;
-        this.promotion=this.turn.isPromotion(this.board);
+        if(move.type==Type.Castle){
+            let newMove:IMove=null;
+            if(move.target.col==2){
+                newMove=new Move(this.board.getField(move.target.row,0),this.board.getField(move.target.row,3),Type.Ordinary);
+            }else{
+                newMove=new Move(this.board.getField(move.target.row,7),this.board.getField(move.target.row,5),Type.Ordinary);
+            }
+            this.moveWithoutCapture(move);
+            this.moveWithoutCapture(newMove);
+        }
+        if(move.type==Type.Ordinary){
+            this.moveWithoutCapture(move);
+            this.promotion=this.turn.isPromotion(this.board);
+        }       
     }
 
-    end(): boolean{
-        if(this.check && this.turn.moves.length==0){ //TODO: może być również opcja z zasłonięciem króla :(
-            return true;
+    moveWithoutCapture(move: IMove){
+        move.target.piece=move.source.piece;
+        let index=this.turn.pieces.indexOf(move.target.piece);
+        this.turn.pieces[index].changePosiotion(move.target);
+        move.source.piece=null;
+    }
+
+    findMove(first:ChessboardItem, second:ChessboardItem): IMove{
+        let move=this.turn.moves.filter(item => item.source == first);
+        move=move.filter(item => item.target == second);
+        return move[0];
+    }
+
+    end(): number{
+        if(this.check && this.turn.moves.length==0){ 
+            return 1; //szach mat
+        } else if(this.turn.moves.length==0){
+            return 2; //remis
         }
-        return false;
+        return 0;
     }
 
     private Capture(player: IPlayer, piece: IChessPiece){

@@ -21,9 +21,7 @@ export class HomeComponent implements OnInit {
   state: string;
   prom: boolean;
 
-  constructor() {
-
-  }
+  constructor() { }
 
   ngOnInit() {
     this.fields = [];
@@ -32,8 +30,8 @@ export class HomeComponent implements OnInit {
     this.firstClick = null;
     this.turn = this.game.turn.color;
     this.state = "stan normalny";
-    this.prom=false;
-    
+    this.prom = false;
+
     for (var i: number = 0; i < 8; i++) {
       this.fields[i] = [];
       for (var j: number = 0; j < 8; j++) {
@@ -57,49 +55,47 @@ export class HomeComponent implements OnInit {
       }
   }
 
-  promotion(piece: string){
-    console.log(piece);
-    this.game.promotionPawn(piece);
+  changePlayer() {
     this.game.changePlayer();
-      this.game.update();
-      this.turn = this.game.turn.color;
-      this.state = this.game.check ? "Szach" : "stan normalny"
-      if (this.game.end()) {
-        this.state = "Szach mat";
-        this.setAllDisabled();
-      }
-      this.setEndabledForPlayer();
-      this.boardToView(this.game.board);
-      this.prom=false;
+    this.game.update();
+    this.turn = this.game.turn.color;
+    this.state = this.game.check ? "Szach" : "stan normalny"
+    if (this.game.end()==1) {
+      this.state = "Szach mat";
+      this.setAllDisabled();
+    }
+    if (this.game.end()==2) {
+      this.state = "Pat";
+      this.setAllDisabled();
+    }
+    this.setEndabledForPlayer();
+    this.boardToView(this.game.board);
+  }
+
+  promotion(piece: string) {
+    this.game.promotionPawn(piece);
+    this.changePlayer();
+    this.prom = false;
   }
 
   move(field: Field) {
     if (field.val != this.game.players.indexOf(this.game.turn) + 1) {
       //console.log("second");
       this.game.move(this.firstClick, this.fieldToBoardItem(field));
-      if(this.game.isPromotion()){
+      if (this.game.isPromotion()) {
         this.state = "awans pionka";
-        this.prom=true;
+        this.prom = true;
         this.setAllDisabled();
         this.boardToView(this.game.board);
         return;
       }
-      this.game.changePlayer();
-      this.game.update();
-      this.turn = this.game.turn.color;
-      this.state = this.game.check ? "Szach" : "stan normalny"
-      if (this.game.end()) {
-        this.state = "Szach mat";
-        this.setAllDisabled();
-      }
-      this.setEndabledForPlayer();
-      this.boardToView(this.game.board);
+      this.changePlayer();
     } else {
       //console.log("first");
       this.setEndabledForPlayer();
       this.firstClick = this.fieldToBoardItem(field);
       if (this.firstClick.piece != null)
-        for (let item of this.game.turn.moves.filter(item => item.source.piece==this.firstClick.piece)) {
+        for (let item of this.game.turn.moves.filter(item => item.source.piece == this.firstClick.piece)) {
           this.boardItemToField(item.target).setActive(true);
         }
     }

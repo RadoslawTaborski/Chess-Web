@@ -11,6 +11,7 @@ export interface IChessPiece {
     readonly sign: string;
     moves: IMove[];
     checking: boolean;
+    firstmove: boolean;
 
     updateMoves(board: Chessboard):void;
     isChecking():boolean;
