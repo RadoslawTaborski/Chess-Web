@@ -37,7 +37,7 @@ export class Game {
 
     changePlayer(){
         this.check=this.turn.isChecking(this.board);
-        console.log(this.check);
+        //console.log(this.check);
         let tmp=this.turn;
         this.turn=this.pause;
         this.pause=tmp;
@@ -54,7 +54,7 @@ export class Game {
         }
         second.piece=first.piece;
         let index=this.turn.pieces.indexOf(second.piece);
-        this.turn.pieces[index].position=second;
+        this.turn.pieces[index].changePosiotion(second);
         first.piece=null;
         this.turn.promotionPawn(this.board);
     }

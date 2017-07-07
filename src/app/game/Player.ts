@@ -74,10 +74,6 @@ export class Player implements IPlayer {
         }
     }
 
-    makeMove() {
-
-    }
-
     updateMoves(board: Chessboard, opponent: IPlayer) {
         this.moves = [];
         for (let piece of this.pieces) {
@@ -92,7 +88,6 @@ export class Player implements IPlayer {
             if (this.simulateMove(board, opponent, this.moves[i])) {
                 this.moves.splice(i, 1);
                 --i;
-                console.log(this.moves);
             }
         }
     }

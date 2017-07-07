@@ -15,4 +15,5 @@ export interface IChessPiece {
     updateMoves(board: Chessboard):void;
     isChecking():boolean;
     cleanMoves():void;
+    changePosiotion(field: ChessboardItem):void;
 }

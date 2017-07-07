@@ -1,4 +1,6 @@
-<table>
+<div class="container"> <table> <tbody>
+  <tr>
+    <td><table>
 <tr>
     <th></th>
     <th class="center">A</th>
@@ -30,6 +32,8 @@
     <th class="center">G</th>
     <th class="center">H</th>
 </tr>
-</table>
+</table></td>
+    <td><div [class.black]="turn==2" [class.white]="turn==1">{{state}}</div></td>
+  </tr>
+</tbody> </table> </div>
 
-<div [class.black]="turn==2" [class.white]="turn==1">{{state}}</div>

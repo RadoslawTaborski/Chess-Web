@@ -8,6 +8,7 @@ import { ChessPiece, Variant, Pieces } from "./ChessPiece";
 
 export class Pawn extends ChessPiece {
     readonly sign;
+    firstmove: boolean;
 
     constructor(pieceOrId: IChessPiece | number, color?: Colors, special?: boolean) {
         if (typeof pieceOrId === "object") {
@@ -16,6 +17,7 @@ export class Pawn extends ChessPiece {
             super(pieceOrId, color, special);
         }
         this.sign = Pieces.pawn;
+        this.firstmove=true;
     }
 
     updateMoves(board: Chessboard) {
@@ -40,5 +42,15 @@ export class Pawn extends ChessPiece {
                 }
             }
         }
+        forward = (color == Colors.White ? -2 : 2);
+        let tmp = board.getField(row + forward, col);
+        if(tmp != null && tmp.piece == null && this.firstmove){
+            this.moves.push(new Move(this.position, tmp, Type.Ordinary))
+        }
+    }
+
+    changePosiotion(field: ChessboardItem){
+        this.firstmove=false;
+        this.position = field;
     }
 } //TODO: dodać poruszanie dwóch pól do przodu

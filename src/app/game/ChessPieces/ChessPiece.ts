@@ -40,6 +40,10 @@ export abstract class ChessPiece implements IChessPiece {
         this.moves = [];
     }
 
+    changePosiotion(field: ChessboardItem){
+        this.position = field;
+    }
+
     abstract updateMoves(board: Chessboard);
 
     updateSupport(board: Chessboard , variants: Variant[], range: number) {

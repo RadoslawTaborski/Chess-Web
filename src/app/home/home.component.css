@@ -72,6 +72,15 @@ table {
     color: white;
     border: solid;
     border-color: grey;
+    height: 200px;
+    width: 400px;
+    text-align:  center;
+    font-weight: bold;
+    vertical-align: middle;
+    position: relative;
+    float: left;
+    top: 0%;
+    left: 10%;
 }
 
 .white {
@@ -79,4 +88,14 @@ table {
     color: black;
     border: solid;
     border-color: grey;
+    height: 200px;
+    width: 400px;
+    text-align:  center;
+    font-weight: bold;
+    vertical-align: middle;
+    position: relative;
+    float: left;
+    top: 0%;
+    left: 10%;
 }
+

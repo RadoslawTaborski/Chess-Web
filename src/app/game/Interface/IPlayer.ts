@@ -11,7 +11,6 @@ export interface IPlayer extends Observed, Observer {
     time: number;
     moves: IMove[];
 
-    makeMove();
     updateMoves(board: Chessboard, opponent: IPlayer);
     isChecking(board: Chessboard):boolean;
     promotionPawn(board: Chessboard);
