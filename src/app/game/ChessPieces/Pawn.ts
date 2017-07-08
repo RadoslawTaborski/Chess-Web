@@ -42,11 +42,14 @@ export class Pawn extends ChessPiece {
                 }
             }
         }
-        if (Rules.doublePawnSkip) {
+        if (Rules.doublePawnSkip && this.firstmove) {
             forward = (color == Colors.White ? -2 : 2);
-            let tmp = board.getField(row + forward, col);
-            if (tmp != null && tmp.piece == null && this.firstmove) {
-                this.moves.push(new Move(this.position, tmp, Type.Ordinary))
+            let tmp = board.getField(row + forward / 2, col);
+            if (tmp != null && tmp.piece == null) {
+                tmp = board.getField(row + forward, col);
+                if (tmp != null && tmp.piece == null) {
+                    this.moves.push(new Move(this.position, tmp, Type.Ordinary))
+                }
             }
         }
     }

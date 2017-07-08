@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Game } from "../game/Game";
 import { Pieces } from "../game/ChessPieces/ChessPiece";
 import { Player } from "../game/Player";
+import { PlayerCPU } from "../game/PlayerCPU";
 import { Rules } from "../game/Rules";
 import { Chessboard } from "../game/Chessboard";
 import { ChessboardItem } from "../game/ChessboardItem";
@@ -20,13 +21,14 @@ export class HomeComponent implements OnInit {
   turn: Colors;
   state: string;
   prom: boolean;
+  end = false;
 
   constructor() { }
 
   ngOnInit() {
     this.fields = [];
     this.rules = { castling: false, time: 300000, doublePawnSkip: false, whoStarts: Colors.White };
-    this.game = new Game(new Player("Gal Anonim", Colors.White, Rules.time), new Player("Adam", Colors.Black, Rules.time), this.rules);
+    this.game = new Game(new Player("gracz", Colors.White, Rules.time), new PlayerCPU("CPU", Colors.Black, Rules.time), this.rules);
     this.firstClick = null;
     this.turn = this.game.turn.color;
     this.state = "stan normalny";
@@ -60,12 +62,14 @@ export class HomeComponent implements OnInit {
     this.game.update();
     this.turn = this.game.turn.color;
     this.state = this.game.check ? "Szach" : "stan normalny"
-    if (this.game.end()==1) {
+    if (this.game.end() == 1) {
       this.state = "Szach mat";
+      this.end = true;
       this.setAllDisabled();
     }
-    if (this.game.end()==2) {
+    if (this.game.end() == 2) {
       this.state = "Pat";
+      this.end = true;
       this.setAllDisabled();
     }
     this.setEndabledForPlayer();
@@ -76,6 +80,7 @@ export class HomeComponent implements OnInit {
     this.game.promotionPawn(piece);
     this.changePlayer();
     this.prom = false;
+    this.cpuMove();
   }
 
   move(field: Field) {
@@ -90,6 +95,7 @@ export class HomeComponent implements OnInit {
         return;
       }
       this.changePlayer();
+      this.cpuMove();
     } else {
       //console.log("first");
       this.setEndabledForPlayer();
@@ -98,6 +104,19 @@ export class HomeComponent implements OnInit {
         for (let item of this.game.turn.moves.filter(item => item.source.piece == this.firstClick.piece)) {
           this.boardItemToField(item.target).setActive(true);
         }
+    }
+  }
+
+  cpuMove() {
+    if(!this.end) {
+      if (this.game.turn instanceof PlayerCPU) {
+        let move = this.game.turn.getMove(this.game.board, this.game.pause);
+        this.game.move(move.source, move.target);
+        if (this.game.isPromotion()) {
+          this.game.promotionPawn(Pieces.queen);
+        }
+        this.changePlayer();
+      }
     }
   }
 
