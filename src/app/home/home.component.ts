@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Game } from "../game/Game";
 import { Pieces } from "../game/ChessPieces/ChessPiece";
-import { Player } from "../game/Player";
+import { PlayerHuman } from "../game/PlayerHuman";
 import { PlayerCPU } from "../game/PlayerCPU";
 import { Rules } from "../game/Rules";
 import { Chessboard } from "../game/Chessboard";
@@ -22,13 +22,14 @@ export class HomeComponent implements OnInit {
   state: string;
   prom: boolean;
   end = false;
+  specialPieces:string[]=[Pieces.queen, Pieces.rook, Pieces.bishop, Pieces.knight];
 
   constructor() { }
 
   ngOnInit() {
     this.fields = [];
     this.rules = { castling: false, time: 300000, doublePawnSkip: false, whoStarts: Colors.White };
-    this.game = new Game(new Player("gracz", Colors.White, Rules.time), new PlayerCPU("CPU", Colors.Black, Rules.time), this.rules);
+    this.game = new Game(new PlayerHuman("gracz", Colors.White, Rules.time), new PlayerCPU("CPU", Colors.Black, Rules.time), this.rules);
     this.firstClick = null;
     this.turn = this.game.turn.color;
     this.state = "stan normalny";
@@ -77,6 +78,7 @@ export class HomeComponent implements OnInit {
   }
 
   promotion(piece: string) {
+    console.log("home: "+piece)
     this.game.promotionPawn(piece);
     this.changePlayer();
     this.prom = false;

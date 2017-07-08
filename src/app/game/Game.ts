@@ -53,8 +53,8 @@ export class Game {
     }
 
     promotionPawn(piece: string){
+        console.log("game: "+piece)
         this.turn.promotionPawn(this.board, piece);
-        console.log(piece);
     }
 
     move(first:ChessboardItem, second:ChessboardItem){

@@ -35,12 +35,8 @@
 </table></td>
     <td>
         <div [class.black]="turn==2" [class.white]="turn==1">{{state}}<br>
-        <input *ngIf="this.prom" type="button" value="queen" (click)="promotion('Queen')">
-        <input *ngIf="this.prom" type="button" value="rook" (click)="promotion('Rook')">
-        <input *ngIf="this.prom" type="button" value="bishop" (click)="promotion('Bishop')">
-        <input *ngIf="this.prom" type="button" value="knight" (click)="promotion('Knight')">
-        </div>
-        
+        <span *ngIf="this.prom"><input *ngFor="let str of specialPieces" type="button" value="queen" (click)="promotion(str)"></span>
+        </div>      
     </td>
   </tr>
 </tbody> </table> </div>

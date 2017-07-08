@@ -13,8 +13,9 @@ import { ChessboardItem } from "./ChessboardItem"
 import { Chessboard } from "./Chessboard"
 import { Move } from "./Move"
 import { IMove, Type } from "./Interface/IMove"
+import { PlayerHuman } from "./PlayerHuman"
 
-export class Player implements IPlayer {
+export abstract class Player implements IPlayer {
     observers: Observer[] = [];
     name: string = "";
     color: Colors;
@@ -31,7 +32,7 @@ export class Player implements IPlayer {
             this.time = playerOrName.time;
             for (let item of playerOrName.pieces) {
                 switch (item.sign) {
-                    case Pieces.rook: { //TODO: nazwy do osobnego pliku
+                    case Pieces.rook: {
                         this.pieces.push(new Rook(item));
                         break;
                     }
@@ -85,72 +86,6 @@ export class Player implements IPlayer {
         this.leaveCheckBlockingMove(board, opponent);
     }
 
-    private leaveCheckBlockingMove(board: Chessboard, opponent: IPlayer) {
-        for (let i = 0; i < this.moves.length; ++i) {
-            if (this.simulateMove(board, opponent, this.moves[i])) {
-                this.moves.splice(i, 1);
-                --i;
-            }
-        }
-    }
-
-    private simulateMove(board: Chessboard, opponent: IPlayer, move: IMove): boolean {
-        let boardCopy = new Chessboard();
-        let opponentCopy = new Player(opponent);
-        let thisCopy = new Player(this);
-        boardCopy.setPieces(opponentCopy);
-        boardCopy.setPieces(thisCopy);
-        let target = boardCopy.board[move.target.row][move.target.col];
-        let source = boardCopy.board[move.source.row][move.source.col];
-        let newMove=new Move(source,target,move.type);
-
-        if(newMove.type==Type.Capture){
-            this.Capture(opponentCopy,newMove.target.piece);
-            this.moveWithoutCapture(thisCopy,newMove);
-            if(thisCopy.isPromotion(boardCopy)){
-                thisCopy.promotionPawn(boardCopy, Pieces.queen); //TODO: niekoniecznie queen
-            }
-        }
-        if(newMove.type==Type.Castle){
-            let newMove2:IMove=null;
-            if(newMove.target.col==2){
-                newMove2=new Move(boardCopy.getField(newMove.target.row,0),boardCopy.getField(newMove.target.row,3),Type.Ordinary);
-            }else{
-                newMove2=new Move(boardCopy.getField(newMove.target.row,7),boardCopy.getField(newMove.target.row,5),Type.Ordinary);
-            }
-            this.moveWithoutCapture(thisCopy,newMove);
-            this.moveWithoutCapture(thisCopy,newMove2);
-        }
-        if(newMove.type==Type.Ordinary){
-            this.moveWithoutCapture(thisCopy,newMove);
-            if(thisCopy.isPromotion(boardCopy)){
-                thisCopy.promotionPawn(boardCopy, Pieces.queen); //TODO: niekoniecznie queen
-            }
-        }       
-
-        let result = opponentCopy.isChecking(boardCopy);
-
-        return result;
-    }
-
-    private moveWithoutCapture(player: IPlayer, move: IMove){
-        move.target.piece=move.source.piece;
-        let index=player.pieces.indexOf(move.target.piece);
-        player.pieces[index].changePosiotion(move.target);
-        move.source.piece=null;
-    }
-
-    private findMove(first:ChessboardItem, second:ChessboardItem): IMove{
-        let move=this.moves.filter(item => item.source == first);
-        move=move.filter(item => item.target == second);
-        return move[0];
-    }
-
-    private Capture(player: IPlayer, piece: IChessPiece){
-        let index=player.pieces.indexOf(piece);
-        player.pieces.splice(index,1);
-    }
-
     isPromotion(board: Chessboard): boolean {
         for (let i = 0; i < this.pieces.length; ++i) {
             if (this.pieces[i] instanceof Pawn && (this.pieces[i].position.row == 0 || this.pieces[i].position.row == 7)) {
@@ -161,11 +96,13 @@ export class Player implements IPlayer {
     }
 
     promotionPawn(board: Chessboard, piece: string) {
+        console.log("player: "+piece)
         for (let i = 0; i < this.pieces.length; ++i) {
             if (this.pieces[i] instanceof Pawn && (this.pieces[i].position.row == 0 || this.pieces[i].position.row == 7)) {
                 let pos = this.pieces[i].position;
                 switch (piece) {
                     case Pieces.queen: {
+                        console.log("queen: "+piece)
                         this.pieces[i] = new Queen(this.pieces[i].id, this.color, true);
                         break;
                     }
@@ -216,4 +153,71 @@ export class Player implements IPlayer {
             o.update(this);
         }
     }
+
+    protected moveWithoutCapture(player: IPlayer, move: IMove) {
+        move.target.piece = move.source.piece;
+        let index = player.pieces.indexOf(move.target.piece);
+        player.pieces[index].changePosiotion(move.target);
+        move.source.piece = null;
+    }
+
+    protected findMove(first: ChessboardItem, second: ChessboardItem): IMove {
+        let move = this.moves.filter(item => item.source == first);
+        move = move.filter(item => item.target == second);
+        return move[0];
+    }
+
+    protected Capture(player: IPlayer, piece: IChessPiece) {
+        let index = player.pieces.indexOf(piece);
+        player.pieces.splice(index, 1);
+    }
+
+    protected leaveCheckBlockingMove(board: Chessboard, opponent: IPlayer) {
+        for (let i = 0; i < this.moves.length; ++i) {
+            if (this.simulateMove(board, opponent, this.moves[i])) {
+                this.moves.splice(i, 1);
+                --i;
+            }
+        }
+    }
+
+    protected simulateMove(board: Chessboard, opponent: IPlayer, move: IMove): boolean {
+        let boardCopy = new Chessboard();
+        let opponentCopy = new PlayerHuman(opponent);
+        let thisCopy = new PlayerHuman(this);
+        boardCopy.setPieces(opponentCopy);
+        boardCopy.setPieces(thisCopy);
+        let target = boardCopy.board[move.target.row][move.target.col];
+        let source = boardCopy.board[move.source.row][move.source.col];
+        let newMove = new Move(source, target, move.type);
+
+        if (newMove.type == Type.Capture) {
+            this.Capture(opponentCopy, newMove.target.piece);
+            this.moveWithoutCapture(thisCopy, newMove);
+            if (thisCopy.isPromotion(boardCopy)) {
+                thisCopy.promotionPawn(boardCopy, Pieces.queen); //TODO: niekoniecznie queen
+            }
+        }
+        if (newMove.type == Type.Castle) {
+            let newMove2: IMove = null;
+            if (newMove.target.col == 2) {
+                newMove2 = new Move(boardCopy.getField(newMove.target.row, 0), boardCopy.getField(newMove.target.row, 3), Type.Ordinary);
+            } else {
+                newMove2 = new Move(boardCopy.getField(newMove.target.row, 7), boardCopy.getField(newMove.target.row, 5), Type.Ordinary);
+            }
+            this.moveWithoutCapture(thisCopy, newMove);
+            this.moveWithoutCapture(thisCopy, newMove2);
+        }
+        if (newMove.type == Type.Ordinary) {
+            this.moveWithoutCapture(thisCopy, newMove);
+            if (thisCopy.isPromotion(boardCopy)) {
+                thisCopy.promotionPawn(boardCopy, Pieces.queen); //TODO: niekoniecznie queen
+            }
+        }
+
+        let result = opponentCopy.isChecking(boardCopy);
+
+        return result;
+    }
+
 }
