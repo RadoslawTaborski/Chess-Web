@@ -93,7 +93,7 @@ export class HomeComponent implements OnInit {
       this.game.move(this.firstClick, this.fieldToBoardItem(field));
       field.click=true;
       if (this.game.isPromotion()) {
-        this.state = "awans pionka";
+        this.state = "Promocja pionka";
         this.prom = true;
         this.setAllDisabled();
         this.boardToView(this.game.board);

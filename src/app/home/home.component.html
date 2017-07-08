@@ -37,6 +37,6 @@
 
 <app-dialog [(visible)]="this.dialog">
     <h1>{{state}}</h1><br>
-    <span *ngIf="this.prom"><input *ngFor="let str of specialPieces" type="button" value="{{str}}" (click)="promotion(str)"></span>
+    <span *ngIf="this.prom"><input *ngFor="let str of specialPieces" type="button" value="{{str}}" [class.inputBlack]="!game.turn.color" [class.inputWhite]="game.turn.color" (click)="promotion(str)"></span>
     <button *ngIf="!this.prom" (click)="dialog = !showDialog" class="btn">Close</button>
 </app-dialog>
