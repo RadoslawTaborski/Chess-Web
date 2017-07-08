@@ -31,27 +31,27 @@ export class Player implements IPlayer {
             this.time = playerOrName.time;
             for (let item of playerOrName.pieces) {
                 switch (item.sign) {
-                    case "Rook": { //TODO: nazwy do osobnego pliku
+                    case Pieces.rook: { //TODO: nazwy do osobnego pliku
                         this.pieces.push(new Rook(item));
                         break;
                     }
-                    case "Bishop": {
+                    case Pieces.bishop: {
                         this.pieces.push(new Bishop(item));
                         break;
                     }
-                    case "Knight": {
+                    case Pieces.knight: {
                         this.pieces.push(new Knight(item));
                         break;
                     }
-                    case "Queen": {
+                    case Pieces.queen: {
                         this.pieces.push(new Queen(item));
                         break;
                     }
-                    case "King": {
+                    case Pieces.king: {
                         this.pieces.push(new King(item));
                         break;
                     }
-                    case "pawn": {
+                    case Pieces.pawn: {
                         this.pieces.push(new Pawn(item));
                         break;
                     }

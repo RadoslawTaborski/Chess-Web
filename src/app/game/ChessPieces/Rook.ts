@@ -8,6 +8,7 @@ import { ChessPiece, Variant, Pieces } from "./ChessPiece";
 
 export class Rook extends ChessPiece {
     readonly sign;
+    variants: Variant[];
 
     constructor(pieceOrId: IChessPiece | number, color?: Colors, special?: boolean) {
         if (typeof pieceOrId === "object") {
@@ -16,14 +17,14 @@ export class Rook extends ChessPiece {
             super(pieceOrId, color, special);
         }
         this.sign = Pieces.rook;
+        this.variants = [];
+        this.variants.push(new Variant(1, 0));
+        this.variants.push(new Variant(-1, 0));
+        this.variants.push(new Variant(0, 1));
+        this.variants.push(new Variant(0, -1));
     }
 
     updateMoves(board: Chessboard) {
-        let variants: Variant[] = [];
-        variants.push(new Variant(1, 0));
-        variants.push(new Variant(-1, 0));
-        variants.push(new Variant(0, 1));
-        variants.push(new Variant(0, -1));
-        this.updateSupport(board, variants, 8);
+        this.updateSupport(board, this.variants, 8);
     }
 }

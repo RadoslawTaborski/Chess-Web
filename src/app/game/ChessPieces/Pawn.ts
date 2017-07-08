@@ -23,18 +23,16 @@ export class Pawn extends ChessPiece {
     updateMoves(board: Chessboard) {
         this.checking = false;
         this.cleanMoves();
-        this.updateMovesColor(board, this.color);
-    }
 
-    private updateMovesColor(board: Chessboard, color: Colors) {
         let row = this.position.row;
         let col = this.position.col;
-        let forward = (color == Colors.White ? -1 : 1);
+
+        let forward = (this.color == Colors.White ? -1 : 1);
         for (let i = -1; i < 2; ++i) {
             let tmp = board.getField(row + forward, col + i);
             if (i == 0 && tmp != null && tmp.piece == null) {
                 this.moves.push(new Move(this.position, tmp, Type.Ordinary))
-            } else if (i != 0 && tmp != null && tmp.piece != null && tmp.piece.color != color) {
+            } else if (i != 0 && tmp != null && tmp.piece != null && tmp.piece.color != this.color) {
                 if (tmp.piece.id != 1) {
                     this.moves.push(new Move(this.position, tmp, Type.Capture))
                 } else {
@@ -42,8 +40,17 @@ export class Pawn extends ChessPiece {
                 }
             }
         }
-        if (Rules.doublePawnSkip && this.firstmove) {
-            forward = (color == Colors.White ? -2 : 2);
+
+        if (Rules.doublePawnSkip){
+            this.updateSpecialMoves(board);
+        }
+    }
+    
+    private updateSpecialMoves(board: Chessboard) {
+        if (this.firstmove) {
+            let row = this.position.row;
+            let col = this.position.col;
+            let forward = (this.color == Colors.White ? -2 : 2);
             let tmp = board.getField(row + forward / 2, col);
             if (tmp != null && tmp.piece == null) {
                 tmp = board.getField(row + forward, col);

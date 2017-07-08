@@ -13,7 +13,7 @@ export abstract class ChessPiece implements IChessPiece {
     abstract readonly sign: string;
     moves: IMove[] = [];
     checking: boolean = false;
-    firstmove: boolean=true;
+    firstmove: boolean = true;
 
     constructor(id: number, color: Colors, special: boolean);
     constructor(piece: IChessPiece);
@@ -31,7 +31,7 @@ export abstract class ChessPiece implements IChessPiece {
             this.special = special;
         }
     }
-    
+
     isChecking(): boolean {
         return this.checking;
     }
@@ -41,14 +41,14 @@ export abstract class ChessPiece implements IChessPiece {
         this.moves = [];
     }
 
-    changePosiotion(field: ChessboardItem){
-        this.firstmove=false;
+    changePosiotion(field: ChessboardItem) {
+        this.firstmove = false;
         this.position = field;
     }
 
     abstract updateMoves(board: Chessboard);
 
-    updateSupport(board: Chessboard , variants: Variant[], range: number) {
+    updateSupport(board: Chessboard, variants: Variant[], range: number) {
         this.cleanMoves();
         let row = this.position.row;
         let col = this.position.col;
@@ -86,11 +86,11 @@ export class Variant {
     }
 }
 
-export class Pieces{
-    static readonly pawn: string="pawn";
-    static readonly rook: string="Rook";
-    static readonly knight: string="Knight";
-    static readonly bishop: string="Bishop";
-    static readonly queen: string="Queen";
-    static readonly king: string="King";
+export class Pieces {
+    static readonly pawn: string = "pionek";
+    static readonly rook: string = "Wieża";
+    static readonly knight: string = "Skoczek";
+    static readonly bishop: string = "Goniec";
+    static readonly queen: string = "Hetman";
+    static readonly king: string = "Król";
 }

@@ -8,6 +8,7 @@ import { ChessPiece, Variant, Pieces } from "./ChessPiece";
 
 export class Knight extends ChessPiece {
     readonly sign;
+    variants: Variant[];
 
     constructor(pieceOrId: IChessPiece | number, color?: Colors, special?: boolean) {
         if (typeof pieceOrId === "object") {
@@ -16,6 +17,15 @@ export class Knight extends ChessPiece {
             super(pieceOrId, color, special);
         }
         this.sign = Pieces.knight;
+        this.variants = [];
+        this.variants.push(new Variant(2, 1));
+        this.variants.push(new Variant(1, 2));
+        this.variants.push(new Variant(2, -1));
+        this.variants.push(new Variant(1, -2));
+        this.variants.push(new Variant(-2, -1));
+        this.variants.push(new Variant(-1, -2));
+        this.variants.push(new Variant(-2, 1));
+        this.variants.push(new Variant(-1, 2));
     }
 
     updateMoves(board: Chessboard) {
@@ -23,17 +33,7 @@ export class Knight extends ChessPiece {
         let row = this.position.row;
         let col = this.position.col;
 
-        let variants: Variant[] = [];
-        variants.push(new Variant(2, 1));
-        variants.push(new Variant(1, 2));
-        variants.push(new Variant(2, -1));
-        variants.push(new Variant(1, -2));
-        variants.push(new Variant(-2, -1));
-        variants.push(new Variant(-1, -2));
-        variants.push(new Variant(-2, 1));
-        variants.push(new Variant(-1, 2));
-
-        for (let v of variants) {
+        for (let v of this.variants) {
             let tmp = board.getField(row + v.rowMultiplier, col + v.colMultiplier);
             if (tmp != null) {
                 if (tmp.piece == null) {

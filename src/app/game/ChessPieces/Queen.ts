@@ -8,26 +8,27 @@ import { ChessPiece, Variant, Pieces } from "./ChessPiece";
 
 export class Queen extends ChessPiece {
     readonly sign;
+    variants: Variant[];
 
     constructor(pieceOrId: IChessPiece | number, color?: Colors, special?: boolean) {
         if (typeof pieceOrId === "object") {
             super(pieceOrId);
         } else if (typeof pieceOrId === "number" && typeof color === "number" && typeof special === "boolean") {
-            super(pieceOrId,color,special);
+            super(pieceOrId, color, special);
         }
-        this.sign=Pieces.queen;
+        this.sign = Pieces.queen;
+        this.variants = [];
+        this.variants.push(new Variant(1, 1));
+        this.variants.push(new Variant(-1, 1));
+        this.variants.push(new Variant(1, -1));
+        this.variants.push(new Variant(-1, -1));
+        this.variants.push(new Variant(1, 0));
+        this.variants.push(new Variant(-1, 0));
+        this.variants.push(new Variant(0, 1));
+        this.variants.push(new Variant(0, -1));
     }
 
     updateMoves(board: Chessboard) {
-        let variants: Variant[]=[];
-        variants.push(new Variant(1,1));
-        variants.push(new Variant(-1,1));
-        variants.push(new Variant(1,-1));
-        variants.push(new Variant(-1,-1));
-        variants.push(new Variant(1,0));
-        variants.push(new Variant(-1,0));
-        variants.push(new Variant(0,1));
-        variants.push(new Variant(0,-1));
-        this.updateSupport(board, variants, 8);
-    } 
+        this.updateSupport(board, this.variants, 8);
+    }
 }
