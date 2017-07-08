@@ -31,6 +31,16 @@
   margin: 2px 2px;
 }
 
+.fieldClick{
+    height: 100px;
+    width: 100px;
+    background-color: yellowgreen;
+    color: white;
+    border-style: solid;
+    border-color: black;
+    text-align: center;
+}
+
 .inputWhite
 {
   width: 90px;
@@ -72,15 +82,15 @@ table {
     color: white;
     border: solid;
     border-color: grey;
-    height: 100px;
-    width: 300px;
+    height: 200px;
+    width: 520px;
     text-align:  center;
     font-weight: bold;
     vertical-align: middle;
     position: relative;
     float: left;
     top: 0%;
-    left: 10%;
+    left: 0%;
 }
 
 .white {
@@ -88,14 +98,14 @@ table {
     color: black;
     border: solid;
     border-color: grey;
-    height: 100px;
-    width: 300px;
+    height: 200px;
+    width: 520px;
     text-align:  center;
     font-weight: bold;
     vertical-align: middle;
     position: relative;
     float: left;
     top: 0%;
-    left: 10%;
+    left: 0%;
 }
 

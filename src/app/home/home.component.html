@@ -1,43 +1,42 @@
-<div class="container"> <table> <tbody>
-  <tr>
-    <td><table>
-<tr>
-    <th></th>
-    <th class="center">A</th>
-    <th class="center">B</th>
-    <th class="center">C</th>
-    <th class="center">D</th>
-    <th class="center">E</th>
-    <th class="center">F</th>
-    <th class="center">G</th>
-    <th class="center">H</th>
-</tr>
-<tr *ngFor="let row of fields">
-    <td class="center">{{8-fields.indexOf(row)}}</td>
-    <td *ngFor="let item of row">
-        <div [class.fieldC]="item.color==2" [class.fieldB]="item.color==1">
-            <input type="button" value="{{item.sign}}" [class.input]="item.val==0" [class.inputBlack]="item.val==2" [class.inputWhite]="item.val==1" [disabled]="!item.active" (click)="move(item)">
-        </div>
-    </td>
-    <td class="center">{{8-fields.indexOf(row)}}</td>
-</tr>
-<tr>
-    <th></th>
-    <th class="center">A</th>
-    <th class="center">B</th>
-    <th class="center">C</th>
-    <th class="center">D</th>
-    <th class="center">E</th>
-    <th class="center">F</th>
-    <th class="center">G</th>
-    <th class="center">H</th>
-</tr>
-</table></td>
-    <td>
-        <div [class.black]="turn==2" [class.white]="turn==1">{{state}}<br>
-        <span *ngIf="this.prom"><input *ngFor="let str of specialPieces" type="button" value="queen" (click)="promotion(str)"></span>
-        </div>      
-    </td>
-  </tr>
-</tbody> </table> </div>
+<div class="container">
+    <table>
+        <tr>
+            <th></th>
+            <th class="center">A</th>
+            <th class="center">B</th>
+            <th class="center">C</th>
+            <th class="center">D</th>
+            <th class="center">E</th>
+            <th class="center">F</th>
+            <th class="center">G</th>
+            <th class="center">H</th>
+        </tr>
+        <tr *ngFor="let row of fields">
+            <td class="center">{{8-fields.indexOf(row)}}</td>
+            <td *ngFor="let item of row">
+                <div [class.fieldC]="item.color==2" [class.fieldB]="item.color==1" [class.fieldClick]="item.click">
+                    <input type="button" value="{{item.sign}}" [class.input]="item.val==0" [class.inputBlack]="item.val==2" [class.inputWhite]="item.val==1"
+                        [disabled]="!item.active" (click)="move(item)">
+                </div>
+            </td>
+            <td class="center">{{8-fields.indexOf(row)}}</td>
+        </tr>
+        <tr>
+            <th></th>
+            <th class="center">A</th>
+            <th class="center">B</th>
+            <th class="center">C</th>
+            <th class="center">D</th>
+            <th class="center">E</th>
+            <th class="center">F</th>
+            <th class="center">G</th>
+            <th class="center">H</th>
+        </tr>
+    </table>
+</div>
 
+<app-dialog [(visible)]="this.dialog">
+    <h1>{{state}}</h1><br>
+    <span *ngIf="this.prom"><input *ngFor="let str of specialPieces" type="button" value="{{str}}" (click)="promotion(str)"></span>
+    <button *ngIf="!this.prom" (click)="dialog = !showDialog" class="btn">Close</button>
+</app-dialog>

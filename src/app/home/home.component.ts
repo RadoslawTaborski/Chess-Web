@@ -22,6 +22,7 @@ export class HomeComponent implements OnInit {
   state: string;
   prom: boolean;
   end = false;
+  dialog=false;
   specialPieces:string[]=[Pieces.queen, Pieces.rook, Pieces.bishop, Pieces.knight];
 
   constructor() { }
@@ -66,11 +67,13 @@ export class HomeComponent implements OnInit {
     if (this.game.end() == 1) {
       this.state = "Szach mat";
       this.end = true;
+      this.dialog = true;
       this.setAllDisabled();
     }
     if (this.game.end() == 2) {
       this.state = "Pat";
       this.end = true;
+      this.dialog = true;
       this.setAllDisabled();
     }
     this.setEndabledForPlayer();
@@ -82,16 +85,19 @@ export class HomeComponent implements OnInit {
     this.changePlayer();
     this.prom = false;
     this.cpuMove();
+    this.dialog = false;
   }
 
   move(field: Field) {
     if (field.val != this.game.players.indexOf(this.game.turn) + 1) {
       this.game.move(this.firstClick, this.fieldToBoardItem(field));
+      field.click=true;
       if (this.game.isPromotion()) {
         this.state = "awans pionka";
         this.prom = true;
         this.setAllDisabled();
         this.boardToView(this.game.board);
+        this.dialog = true;
         return;
       }
       this.changePlayer();
@@ -100,6 +106,8 @@ export class HomeComponent implements OnInit {
       //console.log("first");
       this.setEndabledForPlayer();
       this.firstClick = this.fieldToBoardItem(field);
+      this.unclickAll();
+      field.click=true;
       if (this.firstClick.piece != null)
         for (let item of this.game.turn.moves.filter(item => item.source.piece == this.firstClick.piece)) {
           this.boardItemToField(item.target).setActive(true);
@@ -111,6 +119,9 @@ export class HomeComponent implements OnInit {
     if(!this.end) {
       if (this.game.turn instanceof PlayerCPU) {
         let move = this.game.turn.getMove(this.game.board, this.game.pause);
+        this.unclickAll();
+        this.boardItemToField(move.source).click=true;
+        this.boardItemToField(move.target).click=true;
         this.game.move(move.source, move.target);
         if (this.game.isPromotion()) {
           this.game.promotionPawn(Pieces.queen);
@@ -135,6 +146,13 @@ export class HomeComponent implements OnInit {
       }
   }
 
+  private unclickAll() {
+    for (let i = 0; i < 8; ++i)
+      for (let j = 0; j < 8; ++j) {
+        this.fields[i][j].click=false;
+      }
+  }
+
   private setEndabledForPlayer() {
     this.setAllDisabled();
     for (let move of this.game.turn.moves) {
@@ -150,6 +168,7 @@ class Field {
   row: number;
   col: number;
   active: boolean = false;
+  click: boolean = false;
 
   constructor(row: number, col: number) {
     this.col = col;
