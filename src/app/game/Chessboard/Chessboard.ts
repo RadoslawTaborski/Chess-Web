@@ -1,9 +1,9 @@
 import { ChessboardItem } from "./ChessboardItem"
-import { Colors } from "./Colors"
-import { Observer, Observed } from "./Pattern/ObserverPattern"
-import { IChessPiece } from "./Interface/IChessPiece"
-import { IPlayer } from "./Interface/IPlayer"
-import { IMove, Type } from "./Interface/IMove"
+import { Colors } from "../Colors"
+import { Observer, Observed } from "../Pattern/ObserverPattern"
+import { IChessPiece } from "../Interface/IChessPiece"
+import { IPlayer } from "../Interface/IPlayer"
+import { IMove, Type } from "../Interface/IMove"
 
 export class Chessboard implements Observer {
     board: ChessboardItem[][] = [];

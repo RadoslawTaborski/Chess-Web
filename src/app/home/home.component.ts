@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Game } from "../game/Game";
 import { Pieces } from "../game/ChessPieces/ChessPiece";
-import { PlayerHuman } from "../game/PlayerHuman";
-import { PlayerCPU } from "../game/PlayerCPU";
+import { PlayerHuman } from "../game/Players/PlayerHuman";
+import { PlayerCPU } from "../game/Players/PlayerCPU";
 import { Rules } from "../game/Rules";
-import { Chessboard } from "../game/Chessboard";
-import { ChessboardItem } from "../game/ChessboardItem";
+import { Chessboard } from "../game/Chessboard/Chessboard";
+import { ChessboardItem } from "../game/Chessboard/ChessboardItem";
 import { Colors } from "../game/Colors";
 
 @Component({
@@ -78,7 +78,6 @@ export class HomeComponent implements OnInit {
   }
 
   promotion(piece: string) {
-    console.log("home: "+piece)
     this.game.promotionPawn(piece);
     this.changePlayer();
     this.prom = false;
@@ -87,7 +86,6 @@ export class HomeComponent implements OnInit {
 
   move(field: Field) {
     if (field.val != this.game.players.indexOf(this.game.turn) + 1) {
-      //console.log("second");
       this.game.move(this.firstClick, this.fieldToBoardItem(field));
       if (this.game.isPromotion()) {
         this.state = "awans pionka";

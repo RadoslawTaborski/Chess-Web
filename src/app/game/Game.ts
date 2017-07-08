@@ -1,9 +1,9 @@
 import { IPlayer } from "./Interface/IPlayer";
 import { IChessPiece } from "./Interface/IChessPiece";
 import { IMove, Type } from "./Interface/IMove";
-import { Chessboard } from "./Chessboard";
+import { Chessboard } from "./Chessboard/Chessboard";
+import { ChessboardItem } from "./Chessboard/ChessboardItem";
 import { Move } from "./Move";
-import { ChessboardItem } from "./ChessboardItem";
 import { Rules } from "./Rules";
 import { Colors } from "./Colors";
 
@@ -53,7 +53,6 @@ export class Game {
     }
 
     promotionPawn(piece: string){
-        console.log("game: "+piece)
         this.turn.promotionPawn(this.board, piece);
     }
 

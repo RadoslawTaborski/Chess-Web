@@ -1,18 +1,18 @@
-import { IPlayer } from "./Interface/IPlayer"
-import { Observer, Observed } from "./Pattern/ObserverPattern"
-import { IChessPiece } from "./Interface/IChessPiece"
-import { ChessPiece, Pieces } from "./ChessPieces/ChessPiece"
-import { Pawn } from "./ChessPieces/Pawn"
-import { Rook } from "./ChessPieces/Rook"
-import { Bishop } from "./ChessPieces/Bishop"
-import { Knight } from "./ChessPieces/Knight"
-import { Queen } from "./ChessPieces/Queen"
-import { King } from "./ChessPieces/King"
-import { Colors } from "./Colors"
-import { ChessboardItem } from "./ChessboardItem"
-import { Chessboard } from "./Chessboard"
-import { Move } from "./Move"
-import { IMove, Type } from "./Interface/IMove"
+import { IPlayer } from "../Interface/IPlayer"
+import { Observer, Observed } from "../Pattern/ObserverPattern"
+import { IChessPiece } from "../Interface/IChessPiece"
+import { ChessPiece, Pieces } from "../ChessPieces/ChessPiece"
+import { Pawn } from "../ChessPieces/Pawn"
+import { Rook } from "../ChessPieces/Rook"
+import { Bishop } from "../ChessPieces/Bishop"
+import { Knight } from "../ChessPieces/Knight"
+import { Queen } from "../ChessPieces/Queen"
+import { King } from "../ChessPieces/King"
+import { Colors } from "../Colors"
+import { ChessboardItem } from "./../Chessboard/ChessboardItem"
+import { Chessboard } from "./../Chessboard/Chessboard";
+import { Move } from "../Move"
+import { IMove, Type } from "../Interface/IMove"
 import { PlayerHuman } from "./PlayerHuman"
 
 export abstract class Player implements IPlayer {
@@ -96,13 +96,11 @@ export abstract class Player implements IPlayer {
     }
 
     promotionPawn(board: Chessboard, piece: string) {
-        console.log("player: "+piece)
         for (let i = 0; i < this.pieces.length; ++i) {
             if (this.pieces[i] instanceof Pawn && (this.pieces[i].position.row == 0 || this.pieces[i].position.row == 7)) {
                 let pos = this.pieces[i].position;
                 switch (piece) {
                     case Pieces.queen: {
-                        console.log("queen: "+piece)
                         this.pieces[i] = new Queen(this.pieces[i].id, this.color, true);
                         break;
                     }

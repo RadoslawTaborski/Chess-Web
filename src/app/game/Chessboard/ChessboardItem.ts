@@ -1,4 +1,4 @@
-import { IChessPiece } from "./Interface/IChessPiece"
+import { IChessPiece } from "../Interface/IChessPiece"
 
 export class ChessboardItem {
     row: number;

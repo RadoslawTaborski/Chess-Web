@@ -1,6 +1,7 @@
 import { IChessPiece } from "./../Interface/IChessPiece"
 import { Colors } from "./../Colors"
-import { Chessboard } from "./../Chessboard"
+import { ChessboardItem } from "./../Chessboard/ChessboardItem"
+import { Chessboard } from "./../Chessboard/Chessboard";
 import { IMove } from "./IMove"
 import { Observed, Observer } from "../Pattern/ObserverPattern"
 

@@ -1,4 +1,5 @@
-import { ChessboardItem } from "./ChessboardItem"
+import { Chessboard } from "./Chessboard/Chessboard";
+import { ChessboardItem } from "./Chessboard/ChessboardItem";
 import { IMove, Type } from "./Interface/IMove"
 
 export class Move implements IMove {

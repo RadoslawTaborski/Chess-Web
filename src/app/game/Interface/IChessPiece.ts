@@ -1,6 +1,6 @@
 import { Colors } from "./../Colors"
-import { ChessboardItem } from "./../ChessboardItem"
-import { Chessboard } from "./../Chessboard"
+import { ChessboardItem } from "./../Chessboard/ChessboardItem"
+import { Chessboard } from "./../Chessboard/Chessboard";
 import { IMove } from "./IMove"
 
 export interface IChessPiece {

@@ -1,4 +1,5 @@
-import { ChessboardItem } from "./../ChessboardItem"
+import { ChessboardItem } from "./../Chessboard/ChessboardItem"
+import { Chessboard } from "./../Chessboard/Chessboard";
 
 export interface IMove {
     source: ChessboardItem;

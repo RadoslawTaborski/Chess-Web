@@ -4,8 +4,8 @@ import { Colors } from "./../Colors";
 import { Rules } from "./../Rules";
 import { Move } from "./../Move";
 import { Pawn } from "./../ChessPieces/Pawn";
-import { ChessboardItem } from "./../ChessboardItem";
-import { Chessboard } from "./../Chessboard";
+import { ChessboardItem } from "./../Chessboard/ChessboardItem"
+import { Chessboard } from "./../Chessboard/Chessboard";
 import { ChessPiece, Variant, Pieces } from "./ChessPiece";
 
 export class King extends ChessPiece {
