@@ -34,7 +34,7 @@
 </tr>
 </table></td>
     <td>
-        <div [class.black]="turn==2" [class.white]="turn==1">{{state}}
+        <div [class.black]="turn==2" [class.white]="turn==1">{{state}}<br>
         <input *ngIf="this.prom" type="button" value="queen" (click)="promotion('Queen')">
         <input *ngIf="this.prom" type="button" value="rook" (click)="promotion('Rook')">
         <input *ngIf="this.prom" type="button" value="bishop" (click)="promotion('Bishop')">

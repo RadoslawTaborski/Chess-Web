@@ -72,8 +72,8 @@ table {
     color: white;
     border: solid;
     border-color: grey;
-    height: 200px;
-    width: 400px;
+    height: 100px;
+    width: 300px;
     text-align:  center;
     font-weight: bold;
     vertical-align: middle;
@@ -88,8 +88,8 @@ table {
     color: black;
     border: solid;
     border-color: grey;
-    height: 200px;
-    width: 400px;
+    height: 100px;
+    width: 300px;
     text-align:  center;
     font-weight: bold;
     vertical-align: middle;
