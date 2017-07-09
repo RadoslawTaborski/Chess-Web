@@ -19,18 +19,18 @@ import { Player } from "./Player"
 
 export class PlayerCPU extends Player {
 
-    constructor(playerOrName: IPlayer | string, color?: Colors, time?: number){
+    constructor(playerOrName: IPlayer | string, color?: Colors, time?: number) {
         if (typeof playerOrName === "object") {
             super(playerOrName);
         } else if (typeof playerOrName === "string" && typeof color === "number" && typeof time === "number") {
             super(playerOrName, color, time);
-        }  
+        }
     }
 
-    private rateMove(board: Chessboard, opponent: IPlayer, move: IMove): number {
+    private rateMove(board: Chessboard, player: IPlayer, opponent: IPlayer, move: IMove, parent: Situation): Situation {
         let boardCopy = new Chessboard();
         let opponentCopy = new PlayerHuman(opponent);
-        let thisCopy = new PlayerHuman(this);
+        let thisCopy = new PlayerHuman(player);
         boardCopy.setPieces(opponentCopy);
         boardCopy.setPieces(thisCopy);
         let target = boardCopy.board[move.target.row][move.target.col];
@@ -65,7 +65,7 @@ export class PlayerCPU extends Player {
         for (var i: number = 0; i < 8; i++) {
             for (var j: number = 0; j < 8; j++) {
                 if (boardCopy.board[i][j].piece != null) {
-                    if (boardCopy.board[i][j].piece.color == this.color) {
+                    if (boardCopy.board[i][j].piece.color == player.color) {
                         result += this.getValue(boardCopy.board[i][j].piece);
                     } else {
                         result -= this.getValue(boardCopy.board[i][j].piece);
@@ -74,62 +74,103 @@ export class PlayerCPU extends Player {
             }
         }
 
-        return result;
+        return new Situation(boardCopy, thisCopy, opponentCopy, parent, move, result);
     }
 
-    private getValue(piece: IChessPiece){
-        switch(piece.sign){
-            case Pieces.queen:{
+    private getValue(piece: IChessPiece) {
+        switch (piece.sign) {
+            case Pieces.queen: {
                 return Values.queen;
             }
-            case Pieces.king:{
+            case Pieces.king: {
                 return Values.king;
             }
-            case Pieces.rook:{
+            case Pieces.rook: {
                 return Values.rook;
             }
-            case Pieces.bishop:{
+            case Pieces.bishop: {
                 return Values.bishop;
             }
-            case Pieces.knight:{
+            case Pieces.knight: {
                 return Values.knight;
             }
-            case Pieces.pawn:{
+            case Pieces.pawn: {
                 return Values.pawn;
             }
-            default:{
+            default: {
                 return 0;
             }
         }
     }
 
     getMove(board: Chessboard, opponent: IPlayer): IMove {
-        let rates: MoveWithRate[]=[];
-        for (let i = 0; i < this.moves.length; ++i) {
-            rates.push(new MoveWithRate(this.moves[i],this.rateMove(board, opponent, this.moves[i])));
+        let root: Situation = new Situation(board, opponent, this, null, null, 0);
+        this.setTree(root);
+        for (let child of root.children) {
+            this.setTree(child);
+            for (let child2 of child.children) {
+                child2.findMinChildren();
+            }
+            child.findMaxChildren();
         }
-        let max=Math.max.apply(Math,rates.map(function(o){return o.rate;}));
-        let moves=rates.filter(item=>item.rate==max); 
-        let index=Math.floor(Math.random() * moves.length);
+        root.findMinChildren();
+  
+        let moves = root.children.filter(item => item.val == root.val);
+        let index = Math.floor(Math.random() * moves.length);
         return moves[index].move;
+    }
+
+    setTree(root: Situation) {
+        root.opponent.updateMoves(root.board, root.player);
+        for (let move of root.opponent.moves) {
+            root.children.push(this.rateMove(root.board, root.opponent, root.player, move, root));
+        }
     }
 }
 
 class Values {
     static king: number = 2000;
-    static queen: number = 10;
+    static queen: number = 9;
     static rook: number = 5;
     static knight: number = 3;
     static bishop: number = 3;
     static pawn: number = 1;
 }
 
-class MoveWithRate{
+class Situation {
+    parent: Situation = null;
+    board: Chessboard;
+    player: IPlayer;
+    opponent: IPlayer;
     move: IMove;
-    rate:number;
+    rate: number;
+    val: number = Number.MAX_VALUE;
+    children: Situation[];
 
-    constructor(move: IMove, rate:number){
-        this.move=move;
-        this.rate=rate;
+    constructor(board: Chessboard, player: IPlayer, opponent: IPlayer, parent: Situation, move: IMove, rate: number) {
+        this.board = board;
+        this.player = player;
+        this.opponent = opponent;
+        this.move = move;
+        this.rate = rate;
+        this.children = [];
+        this.parent = parent;
     }
+
+    findMinChildren() { 
+        if (this.children.length == 0) {
+            this.val = this.rate;
+        } else {
+            this.val = Math.min.apply(Math, this.children.map(function (o) { return o.val; }));
+        }
+    }
+
+    findMaxChildren() {
+        if (this.children.length == 0) {
+            this.val = this.rate;
+        } else {
+            this.val = Math.max.apply(Math, this.children.map(function (o) { return o.val; }));
+        }
+    }
+
 }

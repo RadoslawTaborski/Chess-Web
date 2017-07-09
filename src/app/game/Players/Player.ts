@@ -155,8 +155,10 @@ export abstract class Player implements IPlayer {
     protected moveWithoutCapture(player: IPlayer, move: IMove) {
         move.target.piece = move.source.piece;
         let index = player.pieces.indexOf(move.target.piece);
-        player.pieces[index].changePosiotion(move.target);
-        move.source.piece = null;
+        if(index!=-1){
+           player.pieces[index].changePosiotion(move.target);
+            move.source.piece = null;
+        }     
     }
 
     protected findMove(first: ChessboardItem, second: ChessboardItem): IMove {

@@ -64,6 +64,7 @@ export abstract class ChessPiece implements IChessPiece {
                             this.moves.push(new Move(this.position, tmp, Type.Capture));
                             break;
                         } else {
+                            this.moves.push(new Move(this.position, tmp, Type.Check));
                             this.checking = true;
                             break;
                         }

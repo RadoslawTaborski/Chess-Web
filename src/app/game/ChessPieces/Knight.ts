@@ -42,6 +42,7 @@ export class Knight extends ChessPiece {
                     if (tmp.piece.id != 1) {
                         this.moves.push(new Move(this.position, tmp, Type.Capture));
                     } else {
+                        this.moves.push(new Move(this.position, tmp, Type.Check));
                         this.checking = true;
                     }
                 }
