@@ -7,13 +7,16 @@ import { Rules } from "../game/Rules";
 import { Chessboard } from "../game/Chessboard/Chessboard";
 import { ChessboardItem } from "../game/Chessboard/ChessboardItem";
 import { Colors } from "../game/Colors";
+import { TalkerService } from "../talker.service";
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css']
+  styleUrls: ['./home.component.css'],
+  providers: [TalkerService]
 })
 export class HomeComponent implements OnInit {
+  outputPath: string = 'http://grunwald.zapto.org';
   fields: Field[][];
   rules: Rules;
   game: Game;
@@ -22,10 +25,36 @@ export class HomeComponent implements OnInit {
   state: string;
   prom: boolean;
   end = false;
-  dialog=false;
-  specialPieces:string[]=[Pieces.queen, Pieces.rook, Pieces.bishop, Pieces.knight];
+  dialog = false;
+  specialPieces: string[] = [Pieces.queen, Pieces.rook, Pieces.bishop, Pieces.knight];
 
-  constructor() { }
+  constructor(private talkerService: TalkerService) { }
+
+  public getChessState() {
+    var requestData = {
+      tool: "chess",
+      id: "1",
+      password: "1234",
+      command: "get"
+    }
+    this.talkerService.requestPostObservable(this.outputPath + ':81/test.php', requestData).subscribe((data) => {
+      console.log(data.state);
+      this.game.setGameFromDescription(data.state);
+      this.boardToView(this.game.board);
+      console.log(this.game.getDescription());
+    });
+  }
+
+  public setChessState() {
+    var requestData = {
+      tool: "chess",
+      id: "1",
+      password: "1234",
+      command: "set",
+      setData: this.game.getDescription(),
+    }
+    this.talkerService.requestPostObservable(this.outputPath + ':81/test.php', requestData);
+  }
 
   ngOnInit() {
     this.fields = [];
@@ -46,6 +75,8 @@ export class HomeComponent implements OnInit {
     this.boardToView(this.game.board);
     this.game.update();
     this.setEndabledForPlayer();
+
+    this.getChessState();
   }
 
   boardToView(board: Chessboard) {
@@ -54,7 +85,7 @@ export class HomeComponent implements OnInit {
         if (this.game.board.board[i][j].piece != null) {
           this.fields[i][j].setPiece(this.game.board.board[i][j].piece.sign, this.game.board.board[i][j].piece.type(), this.game.board.board[i][j].piece.color);
         } else {
-          this.fields[i][j].setPiece("","", 0)
+          this.fields[i][j].setPiece("", "", 0)
         }
       }
   }
@@ -91,7 +122,7 @@ export class HomeComponent implements OnInit {
   move(field: Field) {
     if (field.val != this.game.players.indexOf(this.game.turn) + 1) {
       this.game.move(this.firstClick, this.fieldToBoardItem(field));
-      field.click=true;
+      field.click = true;
       if (this.game.isPromotion()) {
         this.state = "Promocja pionka";
         this.prom = true;
@@ -107,7 +138,7 @@ export class HomeComponent implements OnInit {
       this.setEndabledForPlayer();
       this.firstClick = this.fieldToBoardItem(field);
       this.unclickAll();
-      field.click=true;
+      field.click = true;
       if (this.firstClick.piece != null)
         for (let item of this.game.turn.moves.filter(item => item.source.piece == this.firstClick.piece)) {
           this.boardItemToField(item.target).setActive(true);
@@ -116,12 +147,12 @@ export class HomeComponent implements OnInit {
   }
 
   cpuMove() {
-    if(!this.end) {
+    if (!this.end) {
       if (this.game.turn instanceof PlayerCPU) {
         let move = this.game.turn.getMove(this.game.board, this.game.pause);
         this.unclickAll();
-        this.boardItemToField(move.source).click=true;
-        this.boardItemToField(move.target).click=true;
+        this.boardItemToField(move.source).click = true;
+        this.boardItemToField(move.target).click = true;
         this.game.move(move.source, move.target);
         if (this.game.isPromotion()) {
           this.game.promotionPawn(Pieces.queen);
@@ -149,7 +180,7 @@ export class HomeComponent implements OnInit {
   private unclickAll() {
     for (let i = 0; i < 8; ++i)
       for (let j = 0; j < 8; ++j) {
-        this.fields[i][j].click=false;
+        this.fields[i][j].click = false;
       }
   }
 

@@ -102,6 +102,18 @@ export class Game {
         return 0;
     }
 
+    getDescription(): string{
+        return this.board.createDescription();
+    }
+
+    setGameFromDescription(description: string): void{
+        if(this.turn.color==Colors.Black)
+            this.board.setPiecesFromDescription(description,this.turn,this.pause);
+        else{
+            this.board.setPiecesFromDescription(description,this.pause,this.turn);
+        }
+    }
+
     private Capture(player: IPlayer, piece: IChessPiece){
         let index=player.pieces.indexOf(piece);
         player.pieces.splice(index,1);

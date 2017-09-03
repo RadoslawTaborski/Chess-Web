@@ -2,6 +2,7 @@ import { ChessboardItem } from "./ChessboardItem"
 import { Colors } from "../Colors"
 import { Observer, Observed } from "../Pattern/ObserverPattern"
 import { IChessPiece } from "../Interface/IChessPiece"
+import { Pieces } from "../ChessPieces/ChessPiece"
 import { IPlayer } from "../Interface/IPlayer"
 import { IMove, Type } from "../Interface/IMove"
 
@@ -32,9 +33,9 @@ export class Chessboard implements Observer {
 
     update(o: Observed) {
         if (this.instanceOfIPlayer(o)) {
-           // console.log(o);
+            // console.log(o);
             for (let piece of o.pieces) {
-             //   console.log("tutaj ");
+                //   console.log("tutaj ");
                 this.board[piece.position.row][piece.position.col].piece = piece;
             }
         }
@@ -46,7 +47,7 @@ export class Chessboard implements Observer {
             this.setField(player.pieces[1], this.board[0][3]);
             this.setField(player.pieces[2], this.board[0][2]);
             this.setField(player.pieces[3], this.board[0][5]);
-            this.setField(player.pieces[4], this.board[0][1]); 
+            this.setField(player.pieces[4], this.board[0][1]);
             this.setField(player.pieces[5], this.board[0][6]);
             this.setField(player.pieces[6], this.board[0][0]);
             this.setField(player.pieces[7], this.board[0][7]);
@@ -68,8 +69,88 @@ export class Chessboard implements Observer {
         }
     }
 
+    public setPiecesFromDescription(description: string, blackPlayer: IPlayer, whitePlayer: IPlayer) { //TODO obsłużyć awans pionków
+        let black = "rnlqkp";
+        let white = "RNLQKP";
+        let position = -1;
+        for (var i = 0, len = description.length; i < len; i++) {
+            ++position;
+            let row = Math.floor(position / 8);
+            let column = position - row * 8;
+            if (description[i] == "X") {
+                this.board[row][column].piece = null;
+                continue;
+            }
+            if (black.indexOf(description[i]) != -1) {
+                ++i;
+                let pieceId = parseInt(description[i], 16)+1;
+                this.setField(blackPlayer.pieces.filter(x=>x.id===pieceId)[0], this.board[row][column]);
+                ++i;
+                if (description[i] == "+")
+                    blackPlayer.pieces[pieceId].firstmove = false;
+            } else {
+                ++i;
+                let pieceId = parseInt(description[i], 16)+1;
+                this.setField(whitePlayer.pieces.filter(x=>x.id===pieceId)[0], this.board[row][column]);
+                ++i;
+                if (description[i] == "+")
+                    blackPlayer.pieces[pieceId].firstmove = false;
+            }
+        }
+    }
+
+    public createDescription(): string { //TODO: do innego pliku
+        let result: string = "";
+        for (let i = 0; i < 8; ++i) {
+            for (let j = 0; j < 8; ++j) {
+                if (this.board[i][j].piece == null) {
+                    result += "X";
+                    continue;
+                }
+                result+=this.pieceToSign(this.board[i][j].piece);
+                result+=(this.board[i][j].piece.id-1).toString(16);
+                result+=this.board[i][j].piece.firstmove?"-":"+";
+            }
+        }
+        return result;
+    }
+
+    private pieceToSign(piece: IChessPiece): string {
+        if (piece.color == Colors.Black) {
+            switch (piece.sign) {
+                case Pieces.pawn:
+                    return "p";
+                case Pieces.rook:
+                    return "r";
+                case Pieces.knight:
+                    return "n";
+                case Pieces.bishop:
+                    return "l";
+                case Pieces.queen:
+                    return "q";
+                case Pieces.king:
+                    return "k";
+            }
+        } else {
+            switch (piece.sign) {
+                case Pieces.pawn:
+                    return "P";
+                case Pieces.rook:
+                    return "R";
+                case Pieces.knight:
+                    return "N";
+                case Pieces.bishop:
+                    return "L";
+                case Pieces.queen:
+                    return "Q";
+                case Pieces.king:
+                    return "K";
+            }
+        }
+    }
+
     public setPieces(player: IPlayer) {
-        for(let piece of player.pieces){
+        for (let piece of player.pieces) {
             this.setField(piece, this.board[piece.position.row][piece.position.col]);
         }
     }
