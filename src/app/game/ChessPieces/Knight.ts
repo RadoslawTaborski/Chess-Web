@@ -10,6 +10,10 @@ export class Knight extends ChessPiece {
     readonly sign;
     variants: Variant[];
 
+    type(){
+        return "knight";
+    }
+
     constructor(pieceOrId: IChessPiece | number, color?: Colors, special?: boolean) {
         if (typeof pieceOrId === "object") {
             super(pieceOrId);

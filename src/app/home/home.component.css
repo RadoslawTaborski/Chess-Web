@@ -18,17 +18,74 @@
     text-align: center;
 }
 
-.inputBlack
+.blackKing
 {
-  width: 90px;
-  height: 90px;
-  border-radius: 50%;
-  font-size: 50px;
-  color: white;
-  font-size: 20px;
-  text-align: center;
-  background: black;
-  margin: 2px 2px;
+    background: url('../../assets/images/blackKing.png') no-repeat;
+}
+
+.blackQueen
+{   
+    background: url('../../assets/images/blackQueen.png') no-repeat;
+}
+
+.blackBishop
+{
+    background: url('../../assets/images/blackBishop.png') no-repeat;
+}
+
+.blackKnight
+{
+    background: url('../../assets/images/blackKnight.png') no-repeat;
+}
+
+.blackRook
+{
+    background: url('../../assets/images/blackRook.png') no-repeat;
+}
+
+.blackPawn
+{
+    background: url('../../assets/images/blackPawn.png') no-repeat;
+}
+
+.whiteKing
+{
+    background: url('../../assets/images/whiteKing.png') no-repeat;
+}
+
+.whiteQueen
+{   
+    background: url('../../assets/images/whiteQueen.png') no-repeat;
+}
+
+.whiteBishop
+{
+    background: url('../../assets/images/whiteBishop.png') no-repeat;
+}
+
+.whiteKnight
+{
+    background: url('../../assets/images/whiteKnight.png') no-repeat;
+}
+
+.whiteRook
+{
+    background: url('../../assets/images/whiteRook.png') no-repeat;
+}
+
+.whitePawn
+{
+    background: url('../../assets/images/whitePawn.png') no-repeat;
+}
+
+.inputPiece
+{
+    cursor:pointer;
+    border:none;
+    width:100px;
+    height:100px;
+    position: center;
+    margin: -3px -20px;
 }
 
 .fieldClick{
@@ -39,19 +96,6 @@
     border-style: solid;
     border-color: black;
     text-align: center;
-}
-
-.inputWhite
-{
-  width: 90px;
-  height: 90px;
-  border-radius: 50%;
-  font-size: 50px;
-  color: black;
-  font-size: 20px;
-  text-align: center;
-  background: white;
-  margin: 2px 2px;
 }
 
 .input

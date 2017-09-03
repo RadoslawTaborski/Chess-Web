@@ -13,6 +13,10 @@ export class King extends ChessPiece {
     enemies: IChessPiece[];
     variants: Variant[];
 
+    type(){
+        return "king";
+    }
+
     constructor(pieceOrId: IChessPiece | number, color?: Colors, special?: boolean) {
         if (typeof pieceOrId === "object") {
             super(pieceOrId);

@@ -8,7 +8,11 @@ import { ChessPiece, Variant, Pieces } from "./ChessPiece";
 import { Rules } from "../Rules";
 
 export class Pawn extends ChessPiece {
-    readonly sign;
+    readonly sign: string;
+
+    type(){
+        return "pawn";
+    }
 
     constructor(pieceOrId: IChessPiece | number, color?: Colors, special?: boolean) {
         if (typeof pieceOrId === "object") {

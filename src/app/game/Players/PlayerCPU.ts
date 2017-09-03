@@ -73,6 +73,7 @@ export class PlayerCPU extends Player {
                 }
             }
         }
+        result+=player.isChecking(boardCopy)?3:0;
 
         return new Situation(boardCopy, thisCopy, opponentCopy, parent, move, result);
     }

@@ -52,9 +52,9 @@ export class HomeComponent implements OnInit {
     for (let i = 0; i < 8; ++i)
       for (let j = 0; j < 8; ++j) {
         if (this.game.board.board[i][j].piece != null) {
-          this.fields[i][j].setPiece(this.game.board.board[i][j].piece.sign, this.game.board.board[i][j].piece.color);
+          this.fields[i][j].setPiece(this.game.board.board[i][j].piece.sign, this.game.board.board[i][j].piece.type(), this.game.board.board[i][j].piece.color);
         } else {
-          this.fields[i][j].setPiece("", 0)
+          this.fields[i][j].setPiece("","", 0)
         }
       }
   }
@@ -167,6 +167,7 @@ class Field {
   color: Colors = 0;
   row: number;
   col: number;
+  type: string;
   active: boolean = false;
   click: boolean = false;
 
@@ -180,9 +181,10 @@ class Field {
     }
   }
 
-  setPiece(sign: string, color: number) {
+  setPiece(sign: string, type: string, color: number) {
     this.sign = sign;
     this.val = color;
+    this.type = type;
   }
 
   setActive(bool: boolean) {

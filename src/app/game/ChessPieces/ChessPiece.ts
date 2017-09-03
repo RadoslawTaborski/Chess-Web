@@ -32,6 +32,8 @@ export abstract class ChessPiece implements IChessPiece {
         }
     }
 
+    abstract type():string;
+
     isChecking(): boolean {
         return this.checking;
     }
