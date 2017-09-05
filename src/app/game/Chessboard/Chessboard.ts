@@ -84,17 +84,20 @@ export class Chessboard implements Observer {
             if (black.indexOf(description[i]) != -1) {
                 ++i;
                 let pieceId = parseInt(description[i], 16)+1;
-                this.setField(blackPlayer.pieces.filter(x=>x.id===pieceId)[0], this.board[row][column]);
+                let piece=blackPlayer.pieces.filter(x=>x.id===pieceId)[0];
+                this.setField(piece, this.board[row][column]);
                 ++i;
                 if (description[i] == "+")
-                    blackPlayer.pieces[pieceId].firstmove = false;
+                    piece.firstmove = false;
             } else {
                 ++i;
                 let pieceId = parseInt(description[i], 16)+1;
-                this.setField(whitePlayer.pieces.filter(x=>x.id===pieceId)[0], this.board[row][column]);
+                let piece=whitePlayer.pieces.filter(x=>x.id===pieceId)[0];
+                this.setField(piece, this.board[row][column]);
                 ++i;
-                if (description[i] == "+")
-                    blackPlayer.pieces[pieceId].firstmove = false;
+                if (description[i] == "+"){
+                    piece.firstmove = false;
+                }
             }
         }
     }

@@ -38,10 +38,12 @@ export class HomeComponent implements OnInit {
       command: "get"
     }
     this.talkerService.requestPostObservable(this.outputPath + ':81/test.php', requestData).subscribe((data) => {
-      console.log(data.state);
+      console.log(data);
+      
       this.game.setGameFromDescription(data.state);
       this.boardToView(this.game.board);
-      console.log(this.game.getDescription());
+      this.game.update();
+      this.setEndabledForPlayer();
     });
   }
 
@@ -53,7 +55,7 @@ export class HomeComponent implements OnInit {
       command: "set",
       setData: this.game.getDescription(),
     }
-    this.talkerService.requestPostObservable(this.outputPath + ':81/test.php', requestData);
+    this.talkerService.requestPostObservable(this.outputPath + ':81/test.php', requestData).subscribe();
   }
 
   ngOnInit() {
@@ -71,7 +73,7 @@ export class HomeComponent implements OnInit {
         this.fields[i][j] = new Field(i, j);
       }
     }
-    this.game.setPiecesOnBoard();
+    this.game.setPiecesOnBoard(); //TODO: niektóre linijki nie potrzebne prawdopodobnie
     this.boardToView(this.game.board);
     this.game.update();
     this.setEndabledForPlayer();
@@ -132,7 +134,9 @@ export class HomeComponent implements OnInit {
         return;
       }
       this.changePlayer();
+      
       this.cpuMove();
+      this.setChessState();
     } else {
       //console.log("first");
       this.setEndabledForPlayer();
