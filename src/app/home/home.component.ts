@@ -8,6 +8,7 @@ import { Chessboard } from "../game/Chessboard/Chessboard";
 import { ChessboardItem } from "../game/Chessboard/ChessboardItem";
 import { Colors } from "../game/Colors";
 import { TalkerService } from "../talker.service";
+import { Observable } from 'rxjs/Rx';
 
 @Component({
   selector: 'app-home',
@@ -24,11 +25,44 @@ export class HomeComponent implements OnInit {
   turn: Colors;
   state: string;
   prom: boolean;
+  log: boolean;
   end = false;
   dialog = false;
+  playerId: number;
   specialPieces: string[] = [Pieces.queen, Pieces.rook, Pieces.bishop, Pieces.knight];
+  subscribe;
 
   constructor(private talkerService: TalkerService) { }
+
+  public login(id: number){
+    this.log=false;
+    this.dialog = false;
+    this.playerId= id;
+
+    this.setPlayerColor();
+    this.getChessState();
+    this.subscribe=Observable.interval(1 * 1000).subscribe(x => {
+      this.getChessState();
+    });
+  }
+
+  public setPlayerColor() {
+    var requestData = {
+      tool: "chess",
+      id: "1",
+      password: "1234",
+      playerId: this.playerId,
+      command: "login"
+    }
+    this.talkerService.requestPostObservable(this.outputPath + ':81/test.php', requestData).subscribe((data) => {
+      console.log(data);
+      let color=data=="White"?Colors.White:Colors.Black;
+      if(color!=this.game.turn.color){
+        this.game.changePlayer();
+        this.turn=this.game.turn.color;
+      }
+    });
+  }
 
   public getChessState() {
     var requestData = {
@@ -38,12 +72,14 @@ export class HomeComponent implements OnInit {
       command: "get"
     }
     this.talkerService.requestPostObservable(this.outputPath + ':81/test.php', requestData).subscribe((data) => {
-      console.log(data);
-      
       this.game.setGameFromDescription(data.state);
       this.boardToView(this.game.board);
       this.game.update();
-      this.setEndabledForPlayer();
+      if (data.turn == Colors[this.turn]) {
+        this.subscribe.unsubscribe();
+        console.log(data);
+        this.setEndabledForPlayer();
+      }
     });
   }
 
@@ -54,6 +90,7 @@ export class HomeComponent implements OnInit {
       password: "1234",
       command: "set",
       setData: this.game.getDescription(),
+      turn: Colors[this.game.pause.color]
     }
     this.talkerService.requestPostObservable(this.outputPath + ':81/test.php', requestData).subscribe();
   }
@@ -73,12 +110,13 @@ export class HomeComponent implements OnInit {
         this.fields[i][j] = new Field(i, j);
       }
     }
+
+    this.log = true;
+    this.dialog=true;
     this.game.setPiecesOnBoard(); //TODO: niektóre linijki nie potrzebne prawdopodobnie
     this.boardToView(this.game.board);
-    this.game.update();
-    this.setEndabledForPlayer();
-
-    this.getChessState();
+   // this.game.update();
+   // this.setEndabledForPlayer();
   }
 
   boardToView(board: Chessboard) {
@@ -117,7 +155,7 @@ export class HomeComponent implements OnInit {
     this.game.promotionPawn(piece);
     this.changePlayer();
     this.prom = false;
-    this.cpuMove();
+    //this.cpuMove();
     this.dialog = false;
   }
 
@@ -131,12 +169,17 @@ export class HomeComponent implements OnInit {
         this.setAllDisabled();
         this.boardToView(this.game.board);
         this.dialog = true;
-        return;
+        //return;
       }
-      this.changePlayer();
-      
-      this.cpuMove();
+      //this.changePlayer();
+
+      //this.cpuMove();
+      this.boardToView(this.game.board);
+      this.setAllDisabled();
       this.setChessState();
+      this.subscribe=Observable.interval(1 * 1000).subscribe(x => {
+        this.getChessState();
+      });
     } else {
       //console.log("first");
       this.setEndabledForPlayer();
