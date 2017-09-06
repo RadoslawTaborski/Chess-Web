@@ -29,7 +29,6 @@ export class Game {
 
     setPiecesOnBoard(){
         this.board.setInitialPieces(this.players[0]);
-        this.board.setInitialPieces(this.players[1]);
     }
 
     update(){
@@ -58,7 +57,7 @@ export class Game {
 
     move(first:ChessboardItem, second:ChessboardItem){
         let move=this.findMove(first,second);
-        //console.log(first, second);
+        console.log(first, second,move);
         if(move.type==Type.Capture){
             this.Capture(this.pause,move.target.piece);
             this.moveWithoutCapture(move);

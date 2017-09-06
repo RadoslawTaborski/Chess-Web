@@ -77,8 +77,9 @@ export class Chessboard implements Observer {
             ++position;
             let row = Math.floor(position / 8);
             let column = position - row * 8;
-            if (description[i] == "X") {
+            if (description[i] == ".") {
                 this.board[row][column].piece = null;
+                i+=2;
                 continue;
             }
             if (black.indexOf(description[i]) != -1) {
@@ -107,7 +108,7 @@ export class Chessboard implements Observer {
         for (let i = 0; i < 8; ++i) {
             for (let j = 0; j < 8; ++j) {
                 if (this.board[i][j].piece == null) {
-                    result += "X";
+                    result += ".X.";
                     continue;
                 }
                 result+=this.pieceToSign(this.board[i][j].piece);

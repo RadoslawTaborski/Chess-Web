@@ -23,6 +23,7 @@ export class HomeComponent implements OnInit {
   game: Game;
   firstClick: ChessboardItem;
   turn: Colors;
+  player: Colors;
   state: string;
   prom: boolean;
   log: boolean;
@@ -34,15 +35,50 @@ export class HomeComponent implements OnInit {
 
   constructor(private talkerService: TalkerService) { }
 
-  public login(id: number){
-    this.log=false;
+
+  private makeMoveFromDescription(lastDescription: string, newDescription: string) {
+    let cursor = 1;
+    let first: Field;
+    let second: Field;
+    let fields: Field[] = [];
+    let color: number = this.player == Colors.White ? 2 : 1;
+    for (let i = 0; i < 8; ++i) {
+      for (let j = 0; j < 8; ++j) {
+        if (lastDescription[cursor] != newDescription[cursor]) {
+          fields.push(this.fields[i][j]);
+        }
+        cursor += 3;
+      }
+    }
+    if (fields.length == 2) {
+      console.log(fields);
+      this.game.update();
+      if (fields[0].val == color) {
+        this.move(fields[0]);
+        this.move(fields[1]);
+        console.log(this.game.turn, this.fieldToBoardItem(fields[0]), this.fieldToBoardItem(fields[1]));
+        //this.game.move(this.fieldToBoardItem(fields[0]), this.fieldToBoardItem(fields[1]));
+      } else {
+        this.move(fields[1]);
+        this.move(fields[0]);
+        console.log(this.game.turn, this.fieldToBoardItem(fields[0]), this.fieldToBoardItem(fields[1]));
+        //this.game.move(this.fieldToBoardItem(fields[1]), this.fieldToBoardItem(fields[0]));
+        //console.log("tu");
+      }
+    }
+
+    // this.game.move(first, second);
+  }
+
+  public login(id: number) {
+    this.log = false;
     this.dialog = false;
-    this.playerId= id;
+    this.playerId = id;
 
     this.setPlayerColor();
-    this.getChessState();
-    this.subscribe=Observable.interval(1 * 1000).subscribe(x => {
-      this.getChessState();
+    this.getChessState(true);
+    this.subscribe = Observable.interval(1 * 1000).subscribe(x => {
+      this.getChessState(false);
     });
   }
 
@@ -55,16 +91,12 @@ export class HomeComponent implements OnInit {
       command: "login"
     }
     this.talkerService.requestPostObservable(this.outputPath + ':81/test.php', requestData).subscribe((data) => {
-      console.log(data);
-      let color=data=="White"?Colors.White:Colors.Black;
-      if(color!=this.game.turn.color){
-        this.game.changePlayer();
-        this.turn=this.game.turn.color;
-      }
+      console.log("kolor gracza: " + data);
+      this.player = data == "White" ? Colors.White : Colors.Black;
     });
   }
 
-  public getChessState() {
+  public getChessState(first: boolean) {
     var requestData = {
       tool: "chess",
       id: "1",
@@ -72,13 +104,27 @@ export class HomeComponent implements OnInit {
       command: "get"
     }
     this.talkerService.requestPostObservable(this.outputPath + ':81/test.php', requestData).subscribe((data) => {
-      this.game.setGameFromDescription(data.state);
-      this.boardToView(this.game.board);
-      this.game.update();
-      if (data.turn == Colors[this.turn]) {
-        this.subscribe.unsubscribe();
-        console.log(data);
-        this.setEndabledForPlayer();
+      if (!first) {
+        if (data.turn == Colors[this.player]) {
+          console.log("moja kolej");
+          this.subscribe.unsubscribe();
+          this.game.update();
+          this.setEndabledForPlayer();
+        }
+        this.makeMoveFromDescription(this.game.getDescription(), data.state);
+      } else {
+        this.game.setGameFromDescription(data.state);
+        this.boardToView(this.game.board);
+        console.log("stan: " + Colors[this.turn] + " " + data.turn)
+        if (Colors[this.turn] != data.turn) {
+          console.log("first getChessState")
+          this.changePlayer();
+        }
+        if (data.turn == Colors[this.player]) {
+          console.log("moja kolej")
+          this.game.update();
+          this.setEndabledForPlayer();
+        }
       }
     });
   }
@@ -90,7 +136,7 @@ export class HomeComponent implements OnInit {
       password: "1234",
       command: "set",
       setData: this.game.getDescription(),
-      turn: Colors[this.game.pause.color]
+      turn: this.player == Colors.White ? "Black" : "White"
     }
     this.talkerService.requestPostObservable(this.outputPath + ':81/test.php', requestData).subscribe();
   }
@@ -98,7 +144,7 @@ export class HomeComponent implements OnInit {
   ngOnInit() {
     this.fields = [];
     this.rules = { castling: false, time: 300000, doublePawnSkip: false, whoStarts: Colors.White };
-    this.game = new Game(new PlayerHuman("gracz", Colors.White, Rules.time), new PlayerCPU("CPU", Colors.Black, Rules.time), this.rules);
+    this.game = new Game(new PlayerHuman("gracz", Colors.White, Rules.time), new PlayerHuman("gracz2", Colors.Black, Rules.time), this.rules);
     this.firstClick = null;
     this.turn = this.game.turn.color;
     this.state = "stan normalny";
@@ -112,11 +158,11 @@ export class HomeComponent implements OnInit {
     }
 
     this.log = true;
-    this.dialog=true;
+    this.dialog = true;
     this.game.setPiecesOnBoard(); //TODO: niektóre linijki nie potrzebne prawdopodobnie
     this.boardToView(this.game.board);
-   // this.game.update();
-   // this.setEndabledForPlayer();
+    // this.game.update();
+    // this.setEndabledForPlayer();
   }
 
   boardToView(board: Chessboard) {
@@ -147,7 +193,10 @@ export class HomeComponent implements OnInit {
       this.dialog = true;
       this.setAllDisabled();
     }
-    this.setEndabledForPlayer();
+    if (this.player == this.turn) {
+      console.log("changePlayer")
+      this.setEndabledForPlayer();
+    }
     this.boardToView(this.game.board);
   }
 
@@ -169,23 +218,24 @@ export class HomeComponent implements OnInit {
         this.setAllDisabled();
         this.boardToView(this.game.board);
         this.dialog = true;
-        //return;
+        return;
       }
-      //this.changePlayer();
-
-      //this.cpuMove();
-      this.boardToView(this.game.board);
+      if (this.player==this.turn){
+        this.setChessState();
+        this.subscribe = Observable.interval(1 * 1000).subscribe(x => {
+          this.getChessState(false);
+        });
+      }
       this.setAllDisabled();
-      this.setChessState();
-      this.subscribe=Observable.interval(1 * 1000).subscribe(x => {
-        this.getChessState();
-      });
+      this.changePlayer();
+      //this.cpuMove();
+      this.boardToView(this.game.board);  
     } else {
-      //console.log("first");
       this.setEndabledForPlayer();
       this.firstClick = this.fieldToBoardItem(field);
       this.unclickAll();
       field.click = true;
+      console.log(this.firstClick);
       if (this.firstClick.piece != null)
         for (let item of this.game.turn.moves.filter(item => item.source.piece == this.firstClick.piece)) {
           this.boardItemToField(item.target).setActive(true);
