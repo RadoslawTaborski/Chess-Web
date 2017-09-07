@@ -80,6 +80,7 @@ export abstract class Player implements IPlayer {
     updateMoves(board: Chessboard, opponent: IPlayer) {
         this.moves = [];
         for (let piece of this.pieces) {
+            //console.log(piece.id);
             piece.updateMoves(board);
             this.moves = this.moves.concat(piece.moves);
         }

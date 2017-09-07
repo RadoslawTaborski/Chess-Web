@@ -50,5 +50,5 @@
     <h1>{{state}}</h1><br>
     <span *ngIf="this.prom"><input *ngFor="let str of specialPieces" type="button" value="{{str}}" [class.inputBlack]="!game.turn.color" [class.inputWhite]="game.turn.color" (click)="promotion(str)"></span>
     <span *ngIf="this.log"><input type="button" value="0" (click)="login(0)"><input type="button" value="1" (click)="login(1)"></span>
-    <button *ngIf="!this.prom && !this.log" (click)="dialog = !showDialog" class="btn">Close</button>
+    <button *ngIf="!this.prom && !this.log" (click)="close()" class="btn">Close</button>
 </app-dialog>

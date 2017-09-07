@@ -73,6 +73,8 @@ export class Chessboard implements Observer {
         let black = "rnlqkp";
         let white = "RNLQKP";
         let position = -1;
+        let blackPiecesId:number[]=[];
+        let whitePiecesId:number[]=[];
         for (var i = 0, len = description.length; i < len; i++) {
             ++position;
             let row = Math.floor(position / 8);
@@ -84,21 +86,31 @@ export class Chessboard implements Observer {
             }
             if (black.indexOf(description[i]) != -1) {
                 ++i;
-                let pieceId = parseInt(description[i], 16)+1;
-                let piece=blackPlayer.pieces.filter(x=>x.id===pieceId)[0];
+                blackPiecesId.push(parseInt(description[i], 16)+1);
+                let piece=blackPlayer.pieces.filter(x=>x.id===blackPiecesId[blackPiecesId.length-1])[0];
                 this.setField(piece, this.board[row][column]);
                 ++i;
                 if (description[i] == "+")
                     piece.firstmove = false;
             } else {
                 ++i;
-                let pieceId = parseInt(description[i], 16)+1;
-                let piece=whitePlayer.pieces.filter(x=>x.id===pieceId)[0];
+                whitePiecesId.push(parseInt(description[i], 16)+1);
+                let piece=whitePlayer.pieces.filter(x=>x.id===whitePiecesId[whitePiecesId.length-1])[0];
                 this.setField(piece, this.board[row][column]);
                 ++i;
                 if (description[i] == "+"){
                     piece.firstmove = false;
                 }
+            }
+        }
+        for(var i=1; i<17;++i){
+            if(blackPiecesId.filter(item=>item==i).length==0){
+                let index=blackPlayer.pieces.indexOf(blackPlayer.pieces.filter(x=>x.id===i)[0]);
+                blackPlayer.pieces.splice(index,1);
+            }
+            if(whitePiecesId.filter(item=>item==i).length==0){
+                let index=whitePlayer.pieces.indexOf(whitePlayer.pieces.filter(x=>x.id===i)[0]);
+                whitePlayer.pieces.splice(index,1);
             }
         }
     }

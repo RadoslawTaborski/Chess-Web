@@ -51,17 +51,17 @@ export class HomeComponent implements OnInit {
       }
     }
     if (fields.length == 2) {
-      console.log(fields);
+      //console.log(fields);
       this.game.update();
       if (fields[0].val == color) {
         this.move(fields[0]);
         this.move(fields[1]);
-        console.log(this.game.turn, this.fieldToBoardItem(fields[0]), this.fieldToBoardItem(fields[1]));
+        //console.log(this.game.turn, this.fieldToBoardItem(fields[0]), this.fieldToBoardItem(fields[1]));
         //this.game.move(this.fieldToBoardItem(fields[0]), this.fieldToBoardItem(fields[1]));
       } else {
         this.move(fields[1]);
         this.move(fields[0]);
-        console.log(this.game.turn, this.fieldToBoardItem(fields[0]), this.fieldToBoardItem(fields[1]));
+        //console.log(this.game.turn, this.fieldToBoardItem(fields[0]), this.fieldToBoardItem(fields[1]));
         //this.game.move(this.fieldToBoardItem(fields[1]), this.fieldToBoardItem(fields[0]));
         //console.log("tu");
       }
@@ -91,7 +91,7 @@ export class HomeComponent implements OnInit {
       command: "login"
     }
     this.talkerService.requestPostObservable(this.outputPath + ':81/test.php', requestData).subscribe((data) => {
-      console.log("kolor gracza: " + data);
+     // console.log("kolor gracza: " + data);
       this.player = data == "White" ? Colors.White : Colors.Black;
     });
   }
@@ -106,7 +106,7 @@ export class HomeComponent implements OnInit {
     this.talkerService.requestPostObservable(this.outputPath + ':81/test.php', requestData).subscribe((data) => {
       if (!first) {
         if (data.turn == Colors[this.player]) {
-          console.log("moja kolej");
+          //console.log("moja kolej");
           this.subscribe.unsubscribe();
           this.game.update();
           this.setEndabledForPlayer();
@@ -115,13 +115,13 @@ export class HomeComponent implements OnInit {
       } else {
         this.game.setGameFromDescription(data.state);
         this.boardToView(this.game.board);
-        console.log("stan: " + Colors[this.turn] + " " + data.turn)
+       // console.log("stan: " + Colors[this.turn] + " " + data.turn)
         if (Colors[this.turn] != data.turn) {
-          console.log("first getChessState")
+         // console.log("first getChessState")
           this.changePlayer();
         }
         if (data.turn == Colors[this.player]) {
-          console.log("moja kolej")
+        //  console.log("moja kolej")
           this.game.update();
           this.setEndabledForPlayer();
         }
@@ -194,7 +194,7 @@ export class HomeComponent implements OnInit {
       this.setAllDisabled();
     }
     if (this.player == this.turn) {
-      console.log("changePlayer")
+      //console.log("changePlayer")
       this.setEndabledForPlayer();
     }
     this.boardToView(this.game.board);
@@ -222,6 +222,7 @@ export class HomeComponent implements OnInit {
       }
       if (this.player==this.turn){
         this.setChessState();
+        //this.getChessState(false);
         this.subscribe = Observable.interval(1 * 1000).subscribe(x => {
           this.getChessState(false);
         });
@@ -235,7 +236,7 @@ export class HomeComponent implements OnInit {
       this.firstClick = this.fieldToBoardItem(field);
       this.unclickAll();
       field.click = true;
-      console.log(this.firstClick);
+     // console.log(this.firstClick);
       if (this.firstClick.piece != null)
         for (let item of this.game.turn.moves.filter(item => item.source.piece == this.firstClick.piece)) {
           this.boardItemToField(item.target).setActive(true);
@@ -286,6 +287,10 @@ export class HomeComponent implements OnInit {
     for (let move of this.game.turn.moves) {
       this.fields[move.source.row][move.source.col].setActive(true);
     }
+  }
+
+  close(){
+    this.dialog=false;
   }
 }
 
