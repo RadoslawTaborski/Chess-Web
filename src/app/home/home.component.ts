@@ -30,6 +30,7 @@ export class HomeComponent implements OnInit {
   end = false;
   dialog = false;
   playerId: number;
+  promotionPiece: string="";
   specialPieces: string[] = [Pieces.queen, Pieces.rook, Pieces.bishop, Pieces.knight];
   subscribe;
 
@@ -37,6 +38,10 @@ export class HomeComponent implements OnInit {
 
 
   private makeMoveFromDescription(lastDescription: string, newDescription: string) {
+    if(newDescription.length>192){
+      this.promotionPiece=newDescription.substring(192,newDescription.length);
+      console.log(this.promotionPiece);
+    }
     let cursor = 1;
     let first: Field;
     let second: Field;
@@ -56,14 +61,19 @@ export class HomeComponent implements OnInit {
       if (fields[0].val == color) {
         this.move(fields[0]);
         this.move(fields[1]);
-        //console.log(this.game.turn, this.fieldToBoardItem(fields[0]), this.fieldToBoardItem(fields[1]));
-        //this.game.move(this.fieldToBoardItem(fields[0]), this.fieldToBoardItem(fields[1]));
       } else {
         this.move(fields[1]);
         this.move(fields[0]);
-        //console.log(this.game.turn, this.fieldToBoardItem(fields[0]), this.fieldToBoardItem(fields[1]));
-        //this.game.move(this.fieldToBoardItem(fields[1]), this.fieldToBoardItem(fields[0]));
-        //console.log("tu");
+      }
+    }
+    if (fields.length == 4) {
+      console.log(fields)
+      if (fields[0].type == "king") {
+        this.move(fields[0]);
+        this.move(fields[2]);
+      } else {
+        this.move(fields[3]);
+        this.move(fields[1]);
       }
     }
 
@@ -91,7 +101,7 @@ export class HomeComponent implements OnInit {
       command: "login"
     }
     this.talkerService.requestPostObservable(this.outputPath + ':81/test.php', requestData).subscribe((data) => {
-     // console.log("kolor gracza: " + data);
+      // console.log("kolor gracza: " + data);
       this.player = data == "White" ? Colors.White : Colors.Black;
     });
   }
@@ -111,17 +121,17 @@ export class HomeComponent implements OnInit {
           this.game.update();
           this.setEndabledForPlayer();
         }
-        this.makeMoveFromDescription(this.game.getDescription(), data.state);
+        this.makeMoveFromDescription(this.game.getDescription(this.promotionPiece), data.state);
       } else {
         this.game.setGameFromDescription(data.state);
         this.boardToView(this.game.board);
-       // console.log("stan: " + Colors[this.turn] + " " + data.turn)
+        // console.log("stan: " + Colors[this.turn] + " " + data.turn)
         if (Colors[this.turn] != data.turn) {
-         // console.log("first getChessState")
+          // console.log("first getChessState")
           this.changePlayer();
         }
         if (data.turn == Colors[this.player]) {
-        //  console.log("moja kolej")
+          //  console.log("moja kolej")
           this.game.update();
           this.setEndabledForPlayer();
         }
@@ -135,10 +145,11 @@ export class HomeComponent implements OnInit {
       id: "1",
       password: "1234",
       command: "set",
-      setData: this.game.getDescription(),
+      setData: this.game.getDescription(this.promotionPiece),
       turn: this.player == Colors.White ? "Black" : "White"
     }
     this.talkerService.requestPostObservable(this.outputPath + ':81/test.php', requestData).subscribe();
+    this.promotionPiece = "";
   }
 
   ngOnInit() {
@@ -202,25 +213,43 @@ export class HomeComponent implements OnInit {
 
   promotion(piece: string) {
     this.game.promotionPawn(piece);
-    this.changePlayer();
     this.prom = false;
     //this.cpuMove();
     this.dialog = false;
+    this.promotionPiece = piece;
+    if (this.player == this.turn) {
+      this.setChessState();
+      //this.getChessState(false);
+      this.subscribe = Observable.interval(1 * 1000).subscribe(x => {
+        this.getChessState(false);
+      });
+    }
+    this.setAllDisabled();
+    this.changePlayer();
+    //this.cpuMove();
+    this.boardToView(this.game.board);
   }
 
   move(field: Field) {
     if (field.val != this.game.players.indexOf(this.game.turn) + 1) {
       this.game.move(this.firstClick, this.fieldToBoardItem(field));
       field.click = true;
+
       if (this.game.isPromotion()) {
-        this.state = "Promocja pionka";
-        this.prom = true;
-        this.setAllDisabled();
-        this.boardToView(this.game.board);
-        this.dialog = true;
-        return;
+        if (this.player == this.turn) {
+          this.state = "Promocja pionka";
+          this.prom = true;
+          this.setAllDisabled();
+          this.boardToView(this.game.board);
+          this.dialog = true;
+          return;
+        } else {
+          console.log("promocja")
+          this.game.promotionPawn(this.promotionPiece);
+          this.promotionPiece = "";
+        }
       }
-      if (this.player==this.turn){
+      if (this.player == this.turn) {
         this.setChessState();
         //this.getChessState(false);
         this.subscribe = Observable.interval(1 * 1000).subscribe(x => {
@@ -230,13 +259,13 @@ export class HomeComponent implements OnInit {
       this.setAllDisabled();
       this.changePlayer();
       //this.cpuMove();
-      this.boardToView(this.game.board);  
+      this.boardToView(this.game.board);
     } else {
       this.setEndabledForPlayer();
       this.firstClick = this.fieldToBoardItem(field);
       this.unclickAll();
       field.click = true;
-     // console.log(this.firstClick);
+      // console.log(this.firstClick);
       if (this.firstClick.piece != null)
         for (let item of this.game.turn.moves.filter(item => item.source.piece == this.firstClick.piece)) {
           this.boardItemToField(item.target).setActive(true);
@@ -289,8 +318,8 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  close(){
-    this.dialog=false;
+  close() {
+    this.dialog = false;
   }
 }
 

@@ -101,8 +101,8 @@ export class Game {
         return 0;
     }
 
-    getDescription(): string{
-        return this.board.createDescription();
+    getDescription(promotionPiece: string): string{
+        return this.board.createDescription(promotionPiece);
     }
 
     setGameFromDescription(description: string): void{

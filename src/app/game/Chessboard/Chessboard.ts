@@ -115,7 +115,7 @@ export class Chessboard implements Observer {
         }
     }
 
-    public createDescription(): string { //TODO: do innego pliku
+    public createDescription(promotionPiece: string): string { //TODO: do innego pliku
         let result: string = "";
         for (let i = 0; i < 8; ++i) {
             for (let j = 0; j < 8; ++j) {
@@ -128,6 +128,7 @@ export class Chessboard implements Observer {
                 result+=this.board[i][j].piece.firstmove?"-":"+";
             }
         }
+        result+=promotionPiece;
         return result;
     }
 
