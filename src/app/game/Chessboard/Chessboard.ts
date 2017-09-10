@@ -5,6 +5,10 @@ import { IChessPiece } from "../Interface/IChessPiece"
 import { Pieces } from "../ChessPieces/ChessPiece"
 import { IPlayer } from "../Interface/IPlayer"
 import { IMove, Type } from "../Interface/IMove"
+import { Rook } from "../ChessPieces/Rook"
+import { Bishop } from "../ChessPieces/Bishop"
+import { Knight } from "../ChessPieces/Knight"
+import { Queen } from "../ChessPieces/Queen"
 
 export class Chessboard implements Observer {
     board: ChessboardItem[][] = [];
@@ -88,18 +92,58 @@ export class Chessboard implements Observer {
                 ++i;
                 blackPiecesId.push(parseInt(description[i], 16)+1);
                 let piece=blackPlayer.pieces.filter(x=>x.id===blackPiecesId[blackPiecesId.length-1])[0];
-                this.setField(piece, this.board[row][column]);
+                if(this.pieceToSign(piece)!=description[i-1]){
+                    switch(description[i-1]){
+                        case "q":{
+                            piece=blackPlayer.pieces[blackPlayer.pieces.indexOf(piece)]=new Queen(piece.id,piece.color,true);
+                            break;
+                        }
+                        case "r":{
+                            piece=blackPlayer.pieces[blackPlayer.pieces.indexOf(piece)]=new Rook(piece.id,piece.color,true);
+                            break;
+                        }
+                        case "l":{
+                            piece=blackPlayer.pieces[blackPlayer.pieces.indexOf(piece)]=new Bishop(piece.id,piece.color,true);
+                            break;
+                        }
+                        case "n":{
+                            piece=blackPlayer.pieces[blackPlayer.pieces.indexOf(piece)]=new Knight(piece.id,piece.color,true);
+                            break;
+                        }
+                    }
+                }
+                this.setField(blackPlayer.pieces[blackPlayer.pieces.indexOf(piece)], this.board[row][column]);
                 ++i;
                 if (description[i] == "+")
-                    piece.firstmove = false;
+                    blackPlayer.pieces[blackPlayer.pieces.indexOf(piece)].firstmove = false;
             } else {
                 ++i;
                 whitePiecesId.push(parseInt(description[i], 16)+1);
                 let piece=whitePlayer.pieces.filter(x=>x.id===whitePiecesId[whitePiecesId.length-1])[0];
-                this.setField(piece, this.board[row][column]);
+                if(this.pieceToSign(piece)!=description[i-1]){
+                    switch(description[i-1]){
+                        case "Q":{
+                            piece=whitePlayer.pieces[whitePlayer.pieces.indexOf(piece)]=new Queen(piece.id,piece.color,true);
+                            break;
+                        }
+                        case "R":{
+                            piece=whitePlayer.pieces[whitePlayer.pieces.indexOf(piece)]=new Rook(piece.id,piece.color,true);
+                            break;
+                        }
+                        case "L":{
+                            piece=whitePlayer.pieces[whitePlayer.pieces.indexOf(piece)]=new Bishop(piece.id,piece.color,true);
+                            break;
+                        }
+                        case "N":{
+                            piece=whitePlayer.pieces[whitePlayer.pieces.indexOf(piece)]=new Knight(piece.id,piece.color,true);
+                            break;
+                        }
+                    }
+                }
+                this.setField(whitePlayer.pieces[whitePlayer.pieces.indexOf(piece)], this.board[row][column]);
                 ++i;
                 if (description[i] == "+"){
-                    piece.firstmove = false;
+                    whitePlayer.pieces[whitePlayer.pieces.indexOf(piece)].firstmove = false;
                 }
             }
         }

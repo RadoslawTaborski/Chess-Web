@@ -27,34 +27,45 @@ export class HomeComponent implements OnInit {
   state: string;
   prom: boolean;
   log: boolean;
+  firstTurn: boolean = false;
+  moveCounter: number = 0;
   end = false;
   dialog = false;
   playerId: number;
-  promotionPiece: string="";
+  promotionPiece: string = "";
   specialPieces: string[] = [Pieces.queen, Pieces.rook, Pieces.bishop, Pieces.knight];
   subscribe;
+  interval: number = 0.8;
 
   constructor(private talkerService: TalkerService) { }
 
 
   private makeMoveFromDescription(lastDescription: string, newDescription: string) {
-    if(newDescription.length>192){
-      this.promotionPiece=newDescription.substring(192,newDescription.length);
+    if (newDescription.length > 192) {
+      this.promotionPiece = newDescription.substring(192, newDescription.length);
       console.log(this.promotionPiece);
     }
-    let cursor = 1;
+    let cursor = 0;
     let first: Field;
     let second: Field;
+    let black = "rnlqkp";
+    let white = "RNLQKP";
     let fields: Field[] = [];
     let color: number = this.player == Colors.White ? 2 : 1;
     for (let i = 0; i < 8; ++i) {
       for (let j = 0; j < 8; ++j) {
+        console.log(lastDescription[cursor] + " " + newDescription[cursor])
         if (lastDescription[cursor] != newDescription[cursor]) {
-          fields.push(this.fields[i][j]);
+          if (black.indexOf(lastDescription[cursor]) != -1 && black.indexOf(newDescription[cursor]) != -1 || white.indexOf(lastDescription[cursor]) != -1 && white.indexOf(newDescription[cursor]) != -1) {
+
+          } else {
+            fields.push(this.fields[i][j]);
+          }
         }
         cursor += 3;
       }
     }
+    console.log(fields)
     if (fields.length == 2) {
       //console.log(fields);
       this.game.update();
@@ -76,8 +87,13 @@ export class HomeComponent implements OnInit {
         this.move(fields[1]);
       }
     }
-
-    // this.game.move(first, second);
+    if (fields.length < 2) {
+      this.getChessState(false);
+      this.subscribe = Observable.interval(this.interval * 1000).subscribe(x => {
+        this.getChessState(false);
+      });
+      console.log("REPLAY");
+    }
   }
 
   public login(id: number) {
@@ -87,7 +103,7 @@ export class HomeComponent implements OnInit {
 
     this.setPlayerColor();
     this.getChessState(true);
-    this.subscribe = Observable.interval(1 * 1000).subscribe(x => {
+    this.subscribe = Observable.interval(this.interval * 1000).subscribe(x => {
       this.getChessState(false);
     });
   }
@@ -115,13 +131,20 @@ export class HomeComponent implements OnInit {
     }
     this.talkerService.requestPostObservable(this.outputPath + ':81/test.php', requestData).subscribe((data) => {
       if (!first) {
+        console.log("geetChessState: "+data.turn);
         if (data.turn == Colors[this.player]) {
-          //console.log("moja kolej");
+          console.log("moja kolej");
+          console.log(data.turn + " " + Colors[this.player])
           this.subscribe.unsubscribe();
           this.game.update();
           this.setEndabledForPlayer();
+          if (this.firstTurn) {
+            this.makeMoveFromDescription(this.game.getDescription(this.promotionPiece), data.state);
+          }
+        } else {
+          console.log("TRUE!!!")
+          this.firstTurn = true;
         }
-        this.makeMoveFromDescription(this.game.getDescription(this.promotionPiece), data.state);
       } else {
         this.game.setGameFromDescription(data.state);
         this.boardToView(this.game.board);
@@ -149,7 +172,6 @@ export class HomeComponent implements OnInit {
       turn: this.player == Colors.White ? "Black" : "White"
     }
     this.talkerService.requestPostObservable(this.outputPath + ':81/test.php', requestData).subscribe();
-    this.promotionPiece = "";
   }
 
   ngOnInit() {
@@ -219,8 +241,9 @@ export class HomeComponent implements OnInit {
     this.promotionPiece = piece;
     if (this.player == this.turn) {
       this.setChessState();
+      this.promotionPiece = "";
       //this.getChessState(false);
-      this.subscribe = Observable.interval(1 * 1000).subscribe(x => {
+      this.subscribe = Observable.interval(this.interval * 1000).subscribe(x => {
         this.getChessState(false);
       });
     }
@@ -234,7 +257,7 @@ export class HomeComponent implements OnInit {
     if (field.val != this.game.players.indexOf(this.game.turn) + 1) {
       this.game.move(this.firstClick, this.fieldToBoardItem(field));
       field.click = true;
-
+      this.moveCounter++;
       if (this.game.isPromotion()) {
         if (this.player == this.turn) {
           this.state = "Promocja pionka";
@@ -251,8 +274,9 @@ export class HomeComponent implements OnInit {
       }
       if (this.player == this.turn) {
         this.setChessState();
+        this.promotionPiece = "";
         //this.getChessState(false);
-        this.subscribe = Observable.interval(1 * 1000).subscribe(x => {
+        this.subscribe = Observable.interval(this.interval * 1000).subscribe(x => {
           this.getChessState(false);
         });
       }
