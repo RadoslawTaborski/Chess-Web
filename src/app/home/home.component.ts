@@ -31,7 +31,6 @@ export class HomeComponent implements OnInit {
   moveCounter: number = 0;
   end = false;
   dialog = false;
-  playerId: number;
   promotionPiece: string = "";
   specialPieces: string[] = [Pieces.queen, Pieces.rook, Pieces.bishop, Pieces.knight];
   subscribe;
@@ -96,28 +95,29 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  public login(id: number) {
+  public login(nickname: string, password: string) {
     this.log = false;
     this.dialog = false;
-    this.playerId = id;
+    console.log(nickname+" "+password)
 
-    this.setPlayerColor();
+    this.setPlayerColor(nickname, password);
     this.getChessState(true);
     this.subscribe = Observable.interval(this.interval * 1000).subscribe(x => {
       this.getChessState(false);
     });
   }
 
-  public setPlayerColor() {
+  public setPlayerColor(nickname: string, password: string) {
     var requestData = {
       tool: "chess",
       id: "1",
       password: "1234",
-      playerId: this.playerId,
+      login: nickname,
+      playerPassword: password,
       command: "login"
     }
     this.talkerService.requestPostObservable(this.outputPath + ':81/test.php', requestData).subscribe((data) => {
-      // console.log("kolor gracza: " + data);
+      console.log(data);
       this.player = data == "White" ? Colors.White : Colors.Black;
     });
   }
