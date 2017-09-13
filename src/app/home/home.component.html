@@ -50,9 +50,23 @@
     <h1>{{state}}</h1><br>
     <span *ngIf="this.prom"><input *ngFor="let str of specialPieces" type="button" value="{{str}}" [class.inputBlack]="!game.turn.color" [class.inputWhite]="game.turn.color" (click)="promotion(str)"></span>
     <form *ngIf="this.log" >
-        Login: <input type="text" name="nickname" value="" #nickname><br>
+        Login: <input type="text" name="nickname" value="" #nickname><p *ngIf="!this.logOK">Błędny login lub hasło</p><br>
         Hasło: <input type="password" name="password" value="" #password><br>
-        <input type="button" value="Zaloguj" (click)="login(nickname.value, password.value)">
+        &emsp;&emsp;&emsp;<input type="button" value="Zaloguj" (click)="login(nickname.value, password.value)">
+        <a (click)="this.log=false; this.reg=true; this.state='Rejestracja'">
+            &emsp;Zarejestruj się</a>
       </form>
-    <button *ngIf="!this.prom && !this.log" (click)="close()" class="btn">Close</button>
+      <form *ngIf="this.reg" >
+        Login: <input type="text" name="nickname" value="" #nickname2><p *ngIf="!this.regOK">Ten login jest już zajęty</p><br>
+        Hasło: <input type="password" name="password" value="" #password2><br>
+        &emsp;&emsp;&emsp;<input type="button" value="Zarejestruj" (click)="register(nickname2.value, password2.value)">
+        <a (click)="this.log=true; this.reg=false; this.state='Logowanie'">
+            &emsp;Zaloguj się</a>
+      </form>
+        <table *ngIf="this.gameChooser">
+            <tr *ngFor="let row of this.games">
+                <th class="center" (click)="setPlayerColor(row.id)">{{row.id +" "+ row.player1 + " "+ row.player2}}</th>
+            </tr>
+        </table>
+    <button *ngIf="!this.prom && !this.log && !this.reg && !this.gameChooser" (click)="close()" class="btn">Close</button>
 </app-dialog>

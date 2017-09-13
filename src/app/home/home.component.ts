@@ -24,13 +24,21 @@ export class HomeComponent implements OnInit {
   firstClick: ChessboardItem;
   turn: Colors;
   player: Colors;
-  state: string;
-  prom: boolean;
-  log: boolean;
+  state: string = "Logowanie";
+  prom: boolean = false;
+  log: boolean = true;
+  logOK: boolean = true;
+  reg: boolean = false;
+  regOK: boolean = true;
+  gameChooser: boolean = false;
+  games: any;
+  nickname: string = "";
+  password: string = "";
+  id: number=0;
   firstTurn: boolean = false;
   moveCounter: number = 0;
   end = false;
-  dialog = false;
+  dialog = true;
   promotionPiece: string = "";
   specialPieces: string[] = [Pieces.queen, Pieces.rook, Pieces.bishop, Pieces.knight];
   subscribe;
@@ -96,42 +104,92 @@ export class HomeComponent implements OnInit {
   }
 
   public login(nickname: string, password: string) {
-    this.log = false;
-    this.dialog = false;
-    console.log(nickname+" "+password)
-
-    this.setPlayerColor(nickname, password);
-    this.getChessState(true);
-    this.subscribe = Observable.interval(this.interval * 1000).subscribe(x => {
-      this.getChessState(false);
-    });
-  }
-
-  public setPlayerColor(nickname: string, password: string) {
     var requestData = {
       tool: "chess",
-      id: "1",
-      password: "1234",
       login: nickname,
       playerPassword: password,
       command: "login"
     }
     this.talkerService.requestPostObservable(this.outputPath + ':81/test.php', requestData).subscribe((data) => {
       console.log(data);
-      this.player = data == "White" ? Colors.White : Colors.Black;
+      if (data == "OK") {
+        this.log = false;
+        this.logOK = true;
+        this.nickname = nickname;
+        this.password = password;
+        this.getPlayerGames();
+      } else {
+        this.logOK = false;
+      }
+    });
+  }
+
+  public register(nickname: string, password: string) {
+    var requestData = {
+      tool: "chess",
+      login: nickname,
+      playerPassword: password,
+      command: "register"
+    }
+    this.talkerService.requestPostObservable(this.outputPath + ':81/test.php', requestData).subscribe((data) => {
+      console.log(data);
+      if (data == "OK") {
+        this.regOK = true;
+        this.reg = false;
+        this.log = true;
+      } else {
+        this.regOK = false;
+      }
+    });
+  }
+
+  public getPlayerGames() {
+    this.gameChooser = true;
+    this.state = "Wybór gry";
+
+    var requestData = {
+      tool: "chess",
+      login: this.nickname,
+      playerPassword: this.password,
+      command: "getGames"
+    }
+    this.talkerService.requestPostObservable(this.outputPath + ':81/test.php', requestData).subscribe((data) => {
+      console.log(data);
+      this.games = data;
+    });
+  }
+
+  public setPlayerColor(id: number) {
+    var requestData = {
+      tool: "chess",
+      id: id,
+      login: this.nickname,
+      playerPassword: this.password,
+      command: "getPlayerColor"
+    }
+    this.talkerService.requestPostObservable(this.outputPath + ':81/test.php', requestData).subscribe((data) => {
+      console.log(data);
+      if (data != 'ERROR') {
+        this.id=id;
+        this.player = data == "White" ? Colors.White : Colors.Black;
+        this.getChessState(true);
+        this.subscribe = Observable.interval(this.interval * 1000).subscribe(x => {
+          this.getChessState(false);
+        });
+        this.dialog=false;
+      }
     });
   }
 
   public getChessState(first: boolean) {
     var requestData = {
       tool: "chess",
-      id: "1",
-      password: "1234",
+      id: this.id,
       command: "get"
     }
     this.talkerService.requestPostObservable(this.outputPath + ':81/test.php', requestData).subscribe((data) => {
       if (!first) {
-        console.log("geetChessState: "+data.turn);
+        console.log("geetChessState: " + data.turn);
         if (data.turn == Colors[this.player]) {
           console.log("moja kolej");
           console.log(data.turn + " " + Colors[this.player])
@@ -165,8 +223,7 @@ export class HomeComponent implements OnInit {
   public setChessState() {
     var requestData = {
       tool: "chess",
-      id: "1",
-      password: "1234",
+      id: this.id,
       command: "set",
       setData: this.game.getDescription(this.promotionPiece),
       turn: this.player == Colors.White ? "Black" : "White"
@@ -180,8 +237,6 @@ export class HomeComponent implements OnInit {
     this.game = new Game(new PlayerHuman("gracz", Colors.White, Rules.time), new PlayerHuman("gracz2", Colors.Black, Rules.time), this.rules);
     this.firstClick = null;
     this.turn = this.game.turn.color;
-    this.state = "stan normalny";
-    this.prom = false;
 
     for (var i: number = 0; i < 8; i++) {
       this.fields[i] = [];
@@ -190,8 +245,6 @@ export class HomeComponent implements OnInit {
       }
     }
 
-    this.log = true;
-    this.dialog = true;
     this.game.setPiecesOnBoard(); //TODO: niektóre linijki nie potrzebne prawdopodobnie
     this.boardToView(this.game.board);
     // this.game.update();
