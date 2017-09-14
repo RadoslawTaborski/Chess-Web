@@ -156,7 +156,9 @@ export class HomeComponent implements OnInit {
   }
 
   public getPlayerGames() {
+    this.dialog=true;
     this.gameChooser = true;
+    this.gameCreator = false;
     this.state = "Wybór gry";
 
     var requestData = {
@@ -187,6 +189,7 @@ export class HomeComponent implements OnInit {
   }
 
   public setPlayerColor(id: number) {
+    this.ngOnInit();
     var requestData = {
       tool: "chess",
       id: id,
@@ -196,6 +199,7 @@ export class HomeComponent implements OnInit {
     this.talkerService.requestPostObservable(this.outputPath + ':81/test.php', requestData).subscribe((data) => {
       //console.log(data);
       if (data != 'ERROR') {
+        this.gameChooser=false;
         this.gameID = id;
         this.player = data == "White" ? Colors.White : Colors.Black;
         this.getChessState(true);
@@ -270,8 +274,10 @@ export class HomeComponent implements OnInit {
       id: this.gameID,
       command: "set",
       setData: this.game.getDescription(this.promotionPiece),
-      turn: this.player == Colors.White ? "Black" : "White"
+      turn: this.player == Colors.White ? "Black" : "White",
+      end: (this.end?1:0).toString(),
     }
+    console.log(requestData);
     this.talkerService.requestPostObservable(this.outputPath + ':81/test.php', requestData).subscribe();
   }
 
@@ -313,12 +319,14 @@ export class HomeComponent implements OnInit {
       this.end = true;
       this.dialog = true;
       this.setAllDisabled();
+      this.setChessState();
     }
     if (this.game.end() == 2) {
       this.state = "Pat";
       this.end = true;
       this.dialog = true;
       this.setAllDisabled();
+      this.setChessState();
     }
     if (this.player == this.turn) {
       //console.log("changePlayer")

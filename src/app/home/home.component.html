@@ -43,6 +43,10 @@
             <th class="center">G</th>
             <th class="center">H</th>
         </tr>
+        <tr>
+            <th></th>
+            <th><input type="button" value="POWRÓT" (click)=this.getPlayerGames()></th>
+        </tr>
     </table>
 </div>
 
@@ -66,19 +70,26 @@
                 <th class="th" >{{row.id}}</th>
                 <th class="th" >{{row.player1}}</th>
                 <th class="th" >{{row.player2}}</th>
+                <th class="th" *ngIf="row.end==1">zakończona</th>
+                <th class="th" *ngIf="row.end==0">trwa</th>
             </tr>
             <tr class="trYellow">
+                <th></th>
+                <th></th>
+                <th></th>
                 <th class="th" (click)="getOpponents()">Nowa Gra</th>
             </tr>
         </table>
+        <input *ngIf="this.gameChooser" type="button" value="ODŚWIEŻ" (click)="this.getPlayerGames()">
         <form *ngIf="this.gameCreator" action="">
-            <input type="radio" name="color" value="White" checked=true [(ngModel)]="color" required #colorControl="ngModel">Białe &emsp;&emsp;
+            <input type="radio" name="color" value="White" [(ngModel)]="color" required #colorControl="ngModel" [checked]="true">Białe &emsp;&emsp;
             <input type="radio" name="color" value="Black" [(ngModel)]="color" required>Czarne<br>
             <table *ngIf="this.gameCreator" class="table">
                 <tr *ngFor="let row of this.players" (click)="createNewGame(row.id, colorControl.value)" class="trWhite">
                     <th class="th" >{{row.nickname}}</th>
                 </tr>
             </table>
+            <input type="button" value="POWRÓT" (click)="this.getPlayerGames()">
         </form>
     <button *ngIf="!this.prom && !this.log && !this.reg && !this.gameChooser&&!this.gameCreator" (click)="close()" class="btn">Close</button>
 </app-dialog>
