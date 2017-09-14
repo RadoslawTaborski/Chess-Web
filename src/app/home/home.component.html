@@ -53,20 +53,32 @@
         Login: <input type="text" name="nickname" value="" #nickname><p *ngIf="!this.logOK">Błędny login lub hasło</p><br>
         Hasło: <input type="password" name="password" value="" #password><br>
         &emsp;&emsp;&emsp;<input type="button" value="Zaloguj" (click)="login(nickname.value, password.value)">
-        <a (click)="this.log=false; this.reg=true; this.state='Rejestracja'">
-            &emsp;Zarejestruj się</a>
+        &emsp;<a (click)="this.log=false; this.reg=true; this.state='Rejestracja'">Zarejestruj się</a>
       </form>
       <form *ngIf="this.reg" >
         Login: <input type="text" name="nickname" value="" #nickname2><p *ngIf="!this.regOK">Ten login jest już zajęty</p><br>
         Hasło: <input type="password" name="password" value="" #password2><br>
         &emsp;&emsp;&emsp;<input type="button" value="Zarejestruj" (click)="register(nickname2.value, password2.value)">
-        <a (click)="this.log=true; this.reg=false; this.state='Logowanie'">
-            &emsp;Zaloguj się</a>
+        &emsp;<a (click)="this.log=true; this.reg=false; this.state='Logowanie'">Zaloguj się</a>
       </form>
-        <table *ngIf="this.gameChooser">
-            <tr *ngFor="let row of this.games">
-                <th class="center" (click)="setPlayerColor(row.id)">{{row.id +" "+ row.player1 + " "+ row.player2}}</th>
+        <table *ngIf="this.gameChooser" class="table">
+            <tr *ngFor="let row of this.games" (click)="setPlayerColor(row.id)" [class.trWhite]="this.nickname==row.player1" [class.trBlack]="this.nickname==row.player2">
+                <th class="th" >{{row.id}}</th>
+                <th class="th" >{{row.player1}}</th>
+                <th class="th" >{{row.player2}}</th>
+            </tr>
+            <tr class="trYellow">
+                <th class="th" (click)="getOpponents()">Nowa Gra</th>
             </tr>
         </table>
-    <button *ngIf="!this.prom && !this.log && !this.reg && !this.gameChooser" (click)="close()" class="btn">Close</button>
+        <form *ngIf="this.gameCreator" action="">
+            <input type="radio" name="color" value="White" checked=true [(ngModel)]="color" required #colorControl="ngModel">Białe &emsp;&emsp;
+            <input type="radio" name="color" value="Black" [(ngModel)]="color" required>Czarne<br>
+            <table *ngIf="this.gameCreator" class="table">
+                <tr *ngFor="let row of this.players" (click)="createNewGame(row.id, colorControl.value)" class="trWhite">
+                    <th class="th" >{{row.nickname}}</th>
+                </tr>
+            </table>
+        </form>
+    <button *ngIf="!this.prom && !this.log && !this.reg && !this.gameChooser&&!this.gameCreator" (click)="close()" class="btn">Close</button>
 </app-dialog>
