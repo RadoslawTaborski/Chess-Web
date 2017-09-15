@@ -218,6 +218,11 @@ export class HomeComponent implements OnInit {
       command: "get"
     }
     this.talkerService.requestPostObservable(this.outputPath + ':81/test.php', requestData).subscribe((data) => {
+      if(data.end==1){
+        this.subscribe.unsubscribe();
+        this.dialog=true;
+        this.state="Gra zakończona";
+      }
       if (!first) {
         //console.log("geetChessState: " + data.turn);
         if (data.turn == Colors[this.player]) {
@@ -279,6 +284,15 @@ export class HomeComponent implements OnInit {
     }
     console.log(requestData);
     this.talkerService.requestPostObservable(this.outputPath + ':81/test.php', requestData).subscribe();
+  }
+
+  public surrender(){
+    if(this.end!=true){
+    this.end=true; 
+    this.setChessState()
+    this.state = "Poddano grę";
+    this.dialog = true;
+    }
   }
 
   ngOnInit() {

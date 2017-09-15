@@ -1,7 +1,7 @@
 .fieldB{
     height: 100px;
     width: 100px;
-    background-color:burlywood;
+    background-color:#E8E8E8;
     color: white;
     border-style: solid;
     border-color: black;
@@ -11,7 +11,7 @@
 .fieldC{
     height: 100px;
     width: 100px;
-    background-color: saddlebrown;
+    background-color: #656565;
     color: white;
     border-style: solid;
     border-color: black;
@@ -170,5 +170,5 @@ table {
     background-color:#050505;
     color:#f5f5f5;
 }
-.trYellow:hover{background-color:#EFF703}
+.trYellow:hover{background-color: #4A4A4A}
 

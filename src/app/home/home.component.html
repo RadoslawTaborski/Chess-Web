@@ -45,7 +45,14 @@
         </tr>
         <tr>
             <th></th>
-            <th><input type="button" value="POWRÓT" (click)=this.getPlayerGames()></th>
+            <th><input *ngIf="!this.dialog" type="button" class="btn btn-default" value="POWRÓT" (click)=this.getPlayerGames()></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th><input *ngIf="!this.dialog && this.turn==this.player && !this.end"  type="button" class="btn btn-default" value="PODDAJ" (click)="this.surrender()"></th>
         </tr>
     </table>
 </div>
@@ -54,18 +61,18 @@
     <h1>{{state}}</h1><br>
     <span *ngIf="this.prom"><input *ngFor="let str of specialPieces" type="button" value="{{str}}" [class.inputBlack]="!game.turn.color" [class.inputWhite]="game.turn.color" (click)="promotion(str)"></span>
     <form *ngIf="this.log" >
-        Login: <input type="text" name="nickname" value="" #nickname><p *ngIf="!this.logOK">Błędny login lub hasło</p><br>
-        Hasło: <input type="password" name="password" value="" #password><br>
-        &emsp;&emsp;&emsp;<input type="button" value="Zaloguj" (click)="login(nickname.value, password.value)">
-        &emsp;<a (click)="this.log=false; this.reg=true; this.state='Rejestracja'">Zarejestruj się</a>
+        Login: <input type="text" class="form-control" name="nickname" value="" #nickname><p *ngIf="!this.logOK">Błędny login lub hasło</p><br>
+        Hasło: <input type="password" class="form-control" name="password" value="" #password><br>
+        <input type="button" class="btn btn-default" value="Zaloguj" (click)="login(nickname.value, password.value)">
+        &emsp;<a class="btn btn-link" (click)="this.log=false; this.reg=true; this.state='Rejestracja'">Zarejestruj się</a>
       </form>
       <form *ngIf="this.reg" >
-        Login: <input type="text" name="nickname" value="" #nickname2><p *ngIf="!this.regOK">Ten login jest już zajęty</p><br>
-        Hasło: <input type="password" name="password" value="" #password2><br>
-        &emsp;&emsp;&emsp;<input type="button" value="Zarejestruj" (click)="register(nickname2.value, password2.value)">
-        &emsp;<a (click)="this.log=true; this.reg=false; this.state='Logowanie'">Zaloguj się</a>
+        Login: <input class="form-control" type="text" name="nickname" value="" #nickname2><p *ngIf="!this.regOK">Ten login jest już zajęty</p><br>
+        Hasło: <input class="form-control" type="password" name="password" value="" #password2><br>
+        <input type="button" class="btn btn-default" value="Zarejestruj" (click)="register(nickname2.value, password2.value)">
+        &emsp;<a class="btn btn-link" (click)="this.log=true; this.reg=false; this.state='Logowanie'">Zaloguj się</a>
       </form>
-        <table *ngIf="this.gameChooser" class="table">
+        <table *ngIf="this.gameChooser"  class="table table-hover ">
             <tr *ngFor="let row of this.games" (click)="setPlayerColor(row.id)" [class.trWhite]="this.nickname==row.player1" [class.trBlack]="this.nickname==row.player2">
                 <th class="th" >{{row.id}}</th>
                 <th class="th" >{{row.player1}}</th>
@@ -80,16 +87,16 @@
                 <th class="th" (click)="getOpponents()">Nowa Gra</th>
             </tr>
         </table>
-        <input *ngIf="this.gameChooser" type="button" value="ODŚWIEŻ" (click)="this.getPlayerGames()">
+        <input *ngIf="this.gameChooser" type="button" class="btn btn-default" value="ODŚWIEŻ" (click)="this.getPlayerGames()">
         <form *ngIf="this.gameCreator" action="">
-            <input type="radio" name="color" value="White" [(ngModel)]="color" required #colorControl="ngModel" [checked]="true">Białe &emsp;&emsp;
-            <input type="radio" name="color" value="Black" [(ngModel)]="color" required>Czarne<br>
-            <table *ngIf="this.gameCreator" class="table">
-                <tr *ngFor="let row of this.players" (click)="createNewGame(row.id, colorControl.value)" class="trWhite">
+            <input type="radio" name="color" value="Black" [(ngModel)]="color"  required #colorControl="ngModel" >Czarne &emsp;&emsp;
+            <input type="radio" name="color" value="White" [(ngModel)]="color"  required>Białe<br>
+            <table *ngIf="this.gameCreator"  class="table table-hover">
+                <tr *ngFor="let row of this.players" (click)="createNewGame(row.id, colorControl.value)" class="trYellow">
                     <th class="th" >{{row.nickname}}</th>
                 </tr>
             </table>
-            <input type="button" value="POWRÓT" (click)="this.getPlayerGames()">
+            <input type="button" class="btn btn-default" value="POWRÓT" (click)="this.getPlayerGames()">
         </form>
-    <button *ngIf="!this.prom && !this.log && !this.reg && !this.gameChooser&&!this.gameCreator" (click)="close()" class="btn">Close</button>
+    <button *ngIf="!this.prom && !this.log && !this.reg && !this.gameChooser&&!this.gameCreator" (click)="close()" class="btn">Zamknij</button>
 </app-dialog>
