@@ -28,6 +28,11 @@
 @media (min-width: 768px) {
   .dialog {
     top: 60px;
+    left: 35px;
+  }
+
+  .table{
+    width:100%
   }
 }
 
