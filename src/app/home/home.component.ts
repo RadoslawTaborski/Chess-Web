@@ -44,7 +44,7 @@ export class HomeComponent implements OnInit {
   dialog = true;
   promotionPiece: string = "";
   specialPieces: string[] = [Pieces.queen, Pieces.rook, Pieces.bishop, Pieces.knight];
-  subscribe;
+  subscribe=null;
   interval: number = 0.8;
 
   constructor(private talkerService: TalkerService, private _md5: Md5) { }
@@ -159,6 +159,9 @@ export class HomeComponent implements OnInit {
     this.dialog=true;
     this.gameChooser = true;
     this.gameCreator = false;
+    if(this.subscribe!=null){
+      this.subscribe.unsubscribe();
+    }
     this.state = "Wybór gry";
 
     var requestData = {
@@ -202,6 +205,7 @@ export class HomeComponent implements OnInit {
         this.gameChooser=false;
         this.gameID = id;
         this.player = data == "White" ? Colors.White : Colors.Black;
+        this.firstTurn=false;
         this.getChessState(true);
         this.subscribe = Observable.interval(this.interval * 1000).subscribe(x => {
           this.getChessState(false);

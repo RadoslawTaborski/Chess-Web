@@ -164,11 +164,17 @@ table {
     border-bottom: 1px solid #ddd;
 }
 
-.trWhite:hover{background-color:burlywood}
+.trWhite:hover{
+    background-color:burlywood;
+    color:#f5f5f5;
+}
 
 .trBlack:hover{
     background-color:saddlebrown;
     color:#f5f5f5;
 }
-.trYellow:hover{background-color: yellowgreen}
+.trYellow:hover{
+    background-color: yellowgreen;
+    color:#f5f5f5;
+}
 
